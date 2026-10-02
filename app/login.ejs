@@ -1,29 +1,61 @@
 <div id="loginContainer" style="display: none;">
     <div id="loginCancelContainer" style="display: none;">
         <button id="loginCancelButton">
-            <div id="loginCancelIcon">X</div>
+            <div id="loginCancelIcon"><svg class="tabler-icon" aria-hidden="true" focusable="false"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M18 6l-12 12" />
+  <path d="M6 6l12 12" />
+</svg></div>
             <span id="loginCancelText"><%- lang('login.loginCancelText') %></span>
         </button>
     </div>
     <div id="loginContent">
         <form id="loginForm">
-            <img id="loginImageSeal" src="assets/images/SealCircle.png"/>
+            <img id="loginImageSeal" src="assets/images/UTGC.svg"/>
             <span id="loginSubheader"><%- lang('login.loginSubheader') %></span>
             <div class="loginFieldContainer">
-                <svg id="profileSVG" class="loginSVG" viewBox="40 37 65.36 61.43">
-                    <g>
-                        <path d="M86.77,58.12A13.79,13.79,0,1,0,73,71.91,13.79,13.79,0,0,0,86.77,58.12M97,103.67a3.41,3.41,0,0,0,3.39-3.84,27.57,27.57,0,0,0-54.61,0,3.41,3.41,0,0,0,3.39,3.84Z"/>
-                    </g>
-                </svg>
+                <svg class="tabler-icon loginSVG" aria-hidden="true" focusable="false" id="profileSVG"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
                 <span class="loginErrorSpan" id="loginEmailError"><%- lang('login.loginEmailError') %></span>
                 <input id="loginUsername" class="loginField" type="text" placeholder="<%- lang('login.loginEmailPlaceholder') %>"/>
             </div>
             <div class="loginFieldContainer">
-                <svg id="lockSVG" class="loginSVG" viewBox="40 32 60.36 70.43">
-                    <g>
-                        <path d="M86.16,54a16.38,16.38,0,1,0-32,0H44V102.7H96V54Zm-25.9-3.39a9.89,9.89,0,1,1,19.77,0A9.78,9.78,0,0,1,79.39,54H60.89A9.78,9.78,0,0,1,60.26,50.59ZM70,96.2a6.5,6.5,0,0,1-6.5-6.5,6.39,6.39,0,0,1,3.1-5.4V67h6.5V84.11a6.42,6.42,0,0,1,3.39,5.6A6.5,6.5,0,0,1,70,96.2Z"/>
-                    </g>
-                </svg>
+                <svg class="tabler-icon loginSVG" aria-hidden="true" focusable="false" id="lockSVG"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6" />
+  <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+  <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+</svg>
                 <span class="loginErrorSpan" id="loginPasswordError"><%- lang('login.loginPasswordError') %></span>
                 <input id="loginPassword" class="loginField" type="password" placeholder="<%- lang('login.loginPasswordPlaceholder') %>"/>
             </div>
@@ -40,12 +72,21 @@
             <button id="loginButton" disabled>
                 <div id="loginButtonContent">
                     <%- lang('login.loginButtonText') %>
-                    <svg id="loginSVG" viewBox="0 0 24.87 13.97">
-                        <defs>
-                            <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition: 0.25s ease;}</style>
-                        </defs>
-                        <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
-                    </svg>
+                    <svg class="tabler-icon arrowLine" aria-hidden="true" focusable="false" id="loginSVG"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 12l14 0" />
+  <path d="M13 18l6 -6" />
+  <path d="M13 6l6 6" />
+</svg>
                     <div class="circle-loader">
                         <div class="checkmark draw"></div>
                     </div>

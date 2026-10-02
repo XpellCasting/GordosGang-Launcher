@@ -1,5 +1,5 @@
 appId: 'helioslauncher'
-productName: 'Helios Launcher'
+productName: 'UTGC Launcher'
 artifactName: '${productName}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2018-2026 Daniel Scalzi'
@@ -15,6 +15,7 @@ extraResources:
 
 # Windows Configuration
 win: 
+  icon: 'build/icon.ico'
   target: 
     - target: 'nsis'
       arch: 'x64'
@@ -38,6 +39,7 @@ mac:
 
 # Linux Configuration
 linux: 
+  icon: 'build/icon.png'
   target: 'AppImage'
   maintainer: 'Daniel Scalzi'
   vendor: 'Daniel Scalzi'

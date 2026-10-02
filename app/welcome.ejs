@@ -4,7 +4,7 @@
         <div class="cloudBottom"></div>
     </div>-->
     <div id="welcomeContent">
-        <img id="welcomeImageSeal" src="assets/images/SealCircle.png"/>
+        <img id="welcomeImageSeal" src="assets/images/UTGC.svg"/>
         <span id="welcomeHeader"><%- lang('welcome.welcomeHeader') %></span>
         <span id="welcomeDescription"><%- lang('welcome.welcomeDescription') %></span>
         <br>
@@ -12,12 +12,21 @@
         <button id="welcomeButton">
             <div id="welcomeButtonContent">
                 <%- lang('welcome.continueButton') %>
-                <svg id="welcomeSVG" viewBox="0 0 24.87 13.97">
-                    <defs>
-                        <style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition: 0.25s ease;}</style>
-                    </defs>
-                    <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
-                </svg>
+                <svg class="tabler-icon arrowLine" aria-hidden="true" focusable="false" id="welcomeSVG"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M5 12l14 0" />
+  <path d="M13 18l6 -6" />
+  <path d="M13 6l6 6" />
+</svg>
             </div>
         </button>
     </div>

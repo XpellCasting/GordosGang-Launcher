@@ -152,7 +152,8 @@ function updateSelectedAccount(authUser){
             document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
         }
     }
-    user_text.innerHTML = username
+    user_text.textContent = username
+    user_text.title = username
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount())
 
@@ -699,7 +700,7 @@ function slide_(up){
         lCLLeft.style.top = '0px'
         lCLCenter.style.top = '0px'
         lCLRight.style.top = '0px'
-        newsBtn.style.top = '10px'
+        newsBtn.style.top = '0px'
     }
 }
 

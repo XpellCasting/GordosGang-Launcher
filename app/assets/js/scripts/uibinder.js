@@ -19,7 +19,6 @@ const VIEWS = {
     loginOptions: '#loginOptionsContainer',
     login: '#loginContainer',
     settings: '#settingsContainer',
-    welcome: '#welcomeContainer',
     waiting: '#waitingContainer'
 }
 
@@ -57,7 +56,16 @@ function getCurrentView(){
     return currentView
 }
 
+// Progress represents completed startup stages, not download bytes.
+function setStartupProgress(percent){
+    const track = document.getElementById('startupLoadingTrack')
+    track.style.setProperty('--startup-progress', `${percent}%`)
+    track.setAttribute('aria-valuenow', percent)
+}
+
 async function showMainUI(data){
+
+    setStartupProgress(65)
 
     if(!isDev){
         loggerAutoUpdater.info('Initializing..')
@@ -65,11 +73,11 @@ async function showMainUI(data){
     }
 
     await prepareSettings(true)
+    setStartupProgress(85)
     updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
     refreshServerStatus()
     setTimeout(() => {
         document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        document.body.style.backgroundImage = `url('assets/images/backgrounds/${document.body.getAttribute('bkid')}.jpg')`
         $('#main').show()
 
         const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
@@ -80,27 +88,21 @@ async function showMainUI(data){
             validateSelectedAccount()
         }
 
-        if(ConfigManager.isFirstLaunch()){
-            currentView = VIEWS.welcome
-            $(VIEWS.welcome).fadeIn(1000)
+        if(isLoggedIn){
+            currentView = VIEWS.landing
+            $(VIEWS.landing).fadeIn(1000)
         } else {
-            if(isLoggedIn){
-                currentView = VIEWS.landing
-                $(VIEWS.landing).fadeIn(1000)
-            } else {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.landing
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                currentView = VIEWS.loginOptions
-                $(VIEWS.loginOptions).fadeIn(1000)
-            }
+            loginOptionsCancelEnabled(false)
+            loginOptionsViewOnLoginSuccess = VIEWS.landing
+            loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+            currentView = VIEWS.loginOptions
+            $(VIEWS.loginOptions).fadeIn(1000)
         }
 
+        setStartupProgress(100)
         setTimeout(() => {
-            $('#loadingContainer').fadeOut(500, () => {
-                $('#loadSpinnerImage').removeClass('rotating')
-            })
-        }, 250)
+            $('#loadingContainer').fadeOut(500)
+        }, 500)
         
     }, 750)
     // Disable tabbing to the news container.

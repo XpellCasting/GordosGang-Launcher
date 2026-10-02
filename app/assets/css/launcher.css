@@ -1,26 +1,31 @@
 /* Github Code Highlighting. */
 @import "../../../node_modules/github-syntax-dark/lib/github-dark.css";
 
+@font-face {
+    font-family: 'Coolvetica';
+    src: url('../fonts/Coolvetica-Regular.otf') format('opentype');
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Coolvetica';
+    src: url('../fonts/Coolvetica-Italic.otf') format('opentype');
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+body, body * {
+    font-family: 'Coolvetica', sans-serif;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Fonts                                                                       *
  *                                                                             *
  ******************************************************************************/
-
-@font-face {
-    font-family: 'Avenir Book';
-    src: url('../fonts/Avenir-Book.ttf');
-}
-
-@font-face {
-    font-family: 'Avenir Medium';
-    src: url('../fonts/Avenir-Medium.ttf');
-}
-
-@font-face {
-    font-family: 'Ringbearer';
-    src: url('../fonts/Ringbearer.ttf');
-}
 
 /*******************************************************************************
  *                                                                             *
@@ -40,9 +45,32 @@ p {
     -webkit-margin-after: 0em;
 }
 
+/* Text scales with both viewport dimensions, with readable size limits. */
+html {
+    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 20px);
+}
+
+body {
+    font-size: 1rem;
+    background-image: url('../images/backgrounds/utgc-background.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+:where(h1, h2, h3, p, label, span, a) {
+    overflow-wrap: anywhere;
+}
+
 /* Set default font and color. */
 body, button {
-    font-family: 'Avenir Book';
+    font-family: 'Coolvetica', sans-serif;
     color: white;
 }
 
@@ -107,11 +135,17 @@ body, button {
 /* Frame logo (windows only). */
 #frameTitleDock {
     padding: 0px 10px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
 }
 #frameTitleText {
-    font-size: 14px;
-    font-family: 'Avenir Medium';
+    font-size: clamp(12px, 1.4286vw, 14px);
+    font-family: 'Coolvetica', sans-serif;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Windows frame button dock. */
@@ -273,36 +307,32 @@ body, button {
 */
 
 #welcomeImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
-    height: 125px;
-    width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    height: auto;
+    width: 280px;
     margin-bottom: 5%;
     margin-top: 10%;
 }
 
 #welcomeHeader {
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     text-align: center;
     color: white;
     margin-bottom: 25px;
     letter-spacing: 1px;
-    font-size: 20px;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
     text-shadow: white 0px 0px 0px;
 }
 
 #welcomeDescription {
     text-align: justify;
-    font-size: 13px;
+    font-size: clamp(12px, min(1.3265vw, 2.3551vh), 17px);
     font-weight: 100;
     text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
 }
 
 #welcomeDescCTA {
     text-align: center;
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     font-weight: 100;
     text-shadow: rgba(255, 255, 255, 0.75) 0px 0px 20px
 }
@@ -371,7 +401,7 @@ body, button {
 
 /* Styles for dimmer login span. */
 .loginSpanDim {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: #848484;
     font-weight: bold;
 }
@@ -438,7 +468,7 @@ body, button {
     box-sizing: border-box;
     height: 30px;
     width: 30px;
-    font-size: 19px;
+    font-size: clamp(17px, min(1.9388vw, 3.442vh), 25px);
     line-height: 30px;
     margin: 0 auto;
     margin-bottom: 5px;
@@ -446,7 +476,7 @@ body, button {
 }
 /* Text for the login cancel button. */
 #loginCancelText {
-    font-size: 15px;
+    font-size: clamp(14px, min(1.5306vw, 2.7174vh), 20px);
     transition: 0.25s ease;
 }
 
@@ -469,7 +499,7 @@ body, button {
 
 /* Login form anchor styles. */
 #loginForm a {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: #848484;
     font-weight: bold;
     text-decoration: none;
@@ -486,20 +516,16 @@ body, button {
 
 /* Logo on login form. */
 #loginImageSeal {
-    border-radius: 50%;
-    border: 2px solid #cad7e1;
-    background: rgba(1, 2, 1, 0.5);
-    height: 125px;
-    width: 125px;
-    box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+    height: auto;
+    width: 280px;
     margin-bottom: 20px;
 }
 
 /* Header on login view. */
 #loginSubheader {
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     margin-bottom: 25px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     letter-spacing: 1px;
     font-weight: bold;
 }
@@ -522,9 +548,9 @@ body, button {
 
 /* Span which displays errors related to login field content. */
 .loginErrorSpan {
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     font-weight: bold;
-    font-size: 8px;
+    font-size: clamp(10px, min(0.8163vw, 1.4493vh), 12px);
     color: #ff1b0c;
     width: 100%;
     text-align: right;
@@ -558,7 +584,7 @@ body, button {
 
 /* Login text input styles. */
 .loginField {
-    font-family: 'Avenir Book';
+    font-family: 'Coolvetica', sans-serif;
     background: none;
     border-width: 1.5px 0px 0px 0px;
     border-style: solid;
@@ -570,7 +596,7 @@ body, button {
     text-align: center;
     box-sizing: border-box;
     padding: 7.5px;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     letter-spacing: 1px;
 }
 .loginField:focus {
@@ -581,7 +607,7 @@ body, button {
 }
 .loginField::-webkit-input-placeholder {
     color: rgba(255, 255, 255, 0.75);
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     letter-spacing: 1px;
     text-align: center;
     font-weight: bold;
@@ -786,7 +812,7 @@ body, button {
 
 /* Disclaimer text styles. */
 .loginDisclaimerText {
-    font-size: 7px;
+    font-size: clamp(10px, min(0.7143vw, 1.2681vh), 12px);
     color: #848484;
     font-weight: bold;
     text-align: center;
@@ -803,7 +829,7 @@ body, button {
     align-items: center;
     position: relative;
     cursor: pointer;
-    font-size: 22px;
+    font-size: clamp(20px, min(2.2449vw, 3.9855vh), 29px);
     -webkit-user-select: none;
 }
 
@@ -1021,7 +1047,7 @@ body, button {
     background: none;
     border: none;
     padding: 2px 0px;
-    font-size: 16px;
+    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 21px);
     font-weight: bold;
     color: lightgrey;
     cursor: pointer;
@@ -1093,7 +1119,7 @@ body, button {
     justify-content: center;
 }
 #settingsNavHeaderText {
-    font-size: 20px;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
 }
 
 /* Navigation items outer container. */
@@ -1221,11 +1247,11 @@ body, button {
     margin-bottom: 20px;
 }
 .settingsTabHeaderText {
-    font-size: 20px;
-    font-family: 'Avenir Medium';
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
+    font-family: 'Coolvetica', sans-serif;
 }
 .settingsTabHeaderDesc {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
 }
 
 /* Selected server content container */
@@ -1259,9 +1285,9 @@ body, button {
     border: 1px solid rgb(255, 255, 255);
     color: rgb(255, 255, 255);
     background: none;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1293,7 +1319,7 @@ body, button {
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     border: 1px solid rgba(126, 126, 126, 0.57);
-    font-family: 'Avenir Book';
+    font-family: 'Coolvetica', sans-serif;
     transition: 0.25s ease;
 }
 #settingsContainer input[type=number]:focus,
@@ -1321,12 +1347,12 @@ body, button {
     flex-direction: column;
 }
 .settingsFieldTitle {
-    font-size: 14px;
-    font-family: 'Avenir Medium';
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
+    font-family: 'Coolvetica', sans-serif;
     color: rgba(255, 255, 255, 0.95);
 }
 .settingsFieldDesc {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: rgba(255, 255, 255, .95);
     margin-top: 5px;
 }
@@ -1452,7 +1478,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 0px !important;
     width: 100%;
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     height: 30px;
 }
 
@@ -1460,7 +1486,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsFileSelButton {
     border: 0px;
     border-radius: 0px 3px 3px 0px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     padding: 0px 5px;
     cursor: pointer;
     background: rgba(126, 126, 126, 0.57);
@@ -1479,13 +1505,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Description for the file selector. */
 .settingsFileSelDesc {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     margin: 20px 0px;
     color: lightgrey;
     width: 89%;
 }
 .settingsFileSelDesc strong {
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
 }
 
 /* * *
@@ -1590,13 +1616,13 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
 }
 .settingsAuthAccountDetailTitle {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: grey;
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
 }
 .settingsAuthAccountDetailValue {
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     -webkit-user-select: initial;
 }
 
@@ -1615,7 +1641,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     white-space: nowrap;
     background: none;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     outline: none;
     transition: 0.25s ease;
 }
@@ -1638,9 +1664,9 @@ input:checked + .toggleSwitchSlider:before {
     border: 1px solid rgb(241, 55, 55);
     color: rgb(241, 55, 55);
     background: none;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     border-radius: 3px;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     transition: 0.25s ease;
     cursor: pointer;
     outline: none;
@@ -1714,7 +1740,7 @@ input:checked + .toggleSwitchSlider:before {
 #settingsReqModsContent,
 #settingsOptModsContent,
 #settingsDropinModsContent {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     background: rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     color: white;
@@ -1764,7 +1790,7 @@ input:checked + .toggleSwitchSlider:before {
 /* The version of the mod. */
 .settingsModVersion {
     color: grey;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
 }
 
 /* Disabled toggleswitch for required mods. */
@@ -1822,7 +1848,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 /* Refresh instructions on the file system button. */
 #settingsDropinRefreshNote {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     pointer-events: none;
 }
 
@@ -1830,7 +1856,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsDropinRemoveButton {
     background: none;
     border: none;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     text-align: left;
     padding: 0px;
     color: #c32625;
@@ -1850,7 +1876,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Shaderpack settings description. */
 #settingsShaderpackDesc {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     margin: 10px 0px;
     color: lightgrey;
     font-weight: bold;
@@ -1870,7 +1896,7 @@ input:checked + .toggleSwitchSlider:before {
     cursor: pointer;
     outline: none;
     transition: 0.25s ease;
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     padding: 6px 11px;
     margin-right: 5px;
 }
@@ -1891,7 +1917,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsSelectSelected {
     border-radius: 3px;
     border-width: 1px;
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     padding: 6px 16px;
 }
 
@@ -1955,7 +1981,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 .settingsSelectOptions div {
     border-width: 0px 0px 1px 0px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     padding: 4px 16px;
 }
 .settingsSelectOptions div:last-child {
@@ -2022,7 +2048,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Header for memory sliders. */
 .settingsMemoryHeader {
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
 }
 
 /* Wrapper container for a memory slider and label. */
@@ -2034,7 +2060,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Label which displays a memory slider's value. */
 .settingsMemoryLabel {
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     margin-right: 2%;
 }
 
@@ -2058,18 +2084,18 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
 }
 .settingsMemoryStatusTitle {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: grey;
     font-weight: bold;
 }
 .settingsMemoryStatusValue {
     color: lightgrey;
-    font-size: 16px;
+    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 21px);
 }
 
 /* Description for memory management. */
 #settingsMemoryDesc {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     margin: 20px 0px;
     color: lightgrey;
     font-weight: bold;
@@ -2079,7 +2105,7 @@ input:checked + .toggleSwitchSlider:before {
 #settingsJavaExecDetails {
     font-weight: bold;
     color: grey;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
 }
 
 /* Main container for the JVM options setting. */
@@ -2103,7 +2129,7 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 0px 3px 3px 0px !important;
     width: 100%;
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
 }
 #settingsJVMOptsContent:focus-within > .settingsJavaIcon {
     background: rgba(126, 126, 126, 0.87);
@@ -2111,7 +2137,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Description for the JVM options setting. */
 #settingsJVMOptsDesc {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     margin: 20px 0px;
     color: lightgrey;
     font-weight: bold;
@@ -2157,12 +2183,12 @@ input:checked + .toggleSwitchSlider:before {
     border-bottom: 1px solid rgba(126, 126, 126, 0.57);
 }
 #settingsAboutLogo {
-    width: 30px;
-    height: 30px;
+    width: 100px;
+    height: auto;
     padding: 5px;
 }
 #settingsAboutTitle {
-    font-size: 23px;
+    font-size: clamp(21px, min(2.3469vw, 4.1667vh), 30px);
     padding-left: 10px;
 }
 
@@ -2183,7 +2209,7 @@ input:checked + .toggleSwitchSlider:before {
     color: white;
     height: 15px;
     width: 15px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     line-height: 17px;
 }
 
@@ -2194,15 +2220,15 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Release type text. */
 #settingsAboutCurrentVersionTitle {
-    font-size: 12px;
-    font-family: 'Avenir Medium';
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
+    font-family: 'Coolvetica', sans-serif;
     color: #23aa23;
     font-weight: bold;
 }
 
 /* Current version text. */
 #settingsAboutCurrentVersionLine {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     color: grey;
     font-weight: bold;
 }
@@ -2216,7 +2242,7 @@ input:checked + .toggleSwitchSlider:before {
 .settingsAboutButton {
     background: none;
     border: none;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     color: grey;
     padding: 0px 5px;
     transition: 0.25s ease;
@@ -2257,14 +2283,14 @@ input:checked + .toggleSwitchSlider:before {
 }
 /* Changelog header label. */
 .settingsChangelogLabel {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     color: grey;
     font-weight: bold;
 }
 
 /* Changelog text content container. */
 .settingsChangelogText {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
 }
 
 /* Styles for the changelog elements. */
@@ -2284,7 +2310,7 @@ input:checked + .toggleSwitchSlider:before {
     background-color: rgba(255, 255, 255, 0.25);
     color: white;
     border-radius: 3px;
-    font-family: 'Avenir Book';
+    font-family: 'Coolvetica', sans-serif;
 }
 .settingsChangelogText li+li {
     margin-top: .25em;
@@ -2359,7 +2385,7 @@ input:checked + .toggleSwitchSlider:before {
     border-bottom: 1px solid rgba(126, 126, 126, 0.57);
 }
 #settingsUpdateTitle {
-    font-size: 16px;
+    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 21px);
     padding-left: 10px;
     font-weight: bold;
 }
@@ -2382,7 +2408,7 @@ input:checked + .toggleSwitchSlider:before {
     color: white;
     height: 15px;
     width: 15px;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     line-height: 17px;
 }
 
@@ -2393,15 +2419,15 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Release type text. */
 #settingsUpdateVersionTitle {
-    font-size: 12px;
-    font-family: 'Avenir Medium';
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
+    font-family: 'Coolvetica', sans-serif;
     color: #23aa23;
     font-weight: bold;
 }
 
 /* Current version text. */
 #settingsUpdateVersionLine {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     color: grey;
     font-weight: bold;
 }
@@ -2409,7 +2435,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Update action container. */
 #settingsUpdateActionContainer {
     padding-top: 10px;
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     font-weight: bold;
 }
 
@@ -2420,7 +2446,7 @@ input:checked + .toggleSwitchSlider:before {
     padding-left: 10px;
     background: none;
     border: none;
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     font-weight: bold;
     cursor: pointer;
     outline: none;
@@ -2463,18 +2489,26 @@ input:checked + .toggleSwitchSlider:before {
 }
 #landingContainer > #upper > #left {
     display: inline-flex;
-    width: 15%;
+    flex: 0 0 clamp(180px, 24vw, 320px);
+    box-sizing: border-box;
+    padding-left: clamp(20px, 4vw, 56px);
+    padding-right: 16px;
     height: 100%;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
+
+
 #landingContainer > #upper > #content {
     display: inline-flex;
-    width: 70%;
+    flex: 1;
+    min-width: 0;
     height: 100%;
 }
 #landingContainer > #upper > #right {
     display: inline-flex;
-    width: 15%;
+    flex: 0 0 clamp(156px, 22vw, 260px);
+    box-sizing: border-box;
+    padding-inline: 16px;
     height: 100%;
 }
 
@@ -2591,9 +2625,9 @@ input:checked + .toggleSwitchSlider:before {
 
 /* News article title styles. */
 #newsArticleTitle {
-    font-size: 18px;
+    font-size: clamp(16px, min(1.8367vw, 3.2609vh), 23px);
     font-weight: bold;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     color: white;
     text-decoration: none;
     transition: 0.25s ease;
@@ -2626,7 +2660,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleDate,
 #newsArticleAuthor {
     display: inline-block;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     padding: 0px 5px;
     font-weight: bold;
     border-radius: 2px;
@@ -2648,7 +2682,7 @@ input:checked + .toggleSwitchSlider:before {
 #newsArticleComments {
     margin-top: 5px;
     display: inline-block;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     color: #ffffff;
     text-decoration: none;
     transition: 0.25s ease;
@@ -2672,7 +2706,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Article content styles. */
 #newsArticleContentScrollable {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     overflow-y: scroll;
     height: 100%;
     padding: 0px 15px 0px 15px;
@@ -2710,7 +2744,7 @@ input:checked + .toggleSwitchSlider:before {
     border: none;
     outline: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 21px);
     transition: 0.25s ease;
     width: 100%;
     border-bottom: 1px solid white;
@@ -2758,7 +2792,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Navigation status span. */
 #newsNavigationStatus {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     margin: 0px 15px;
 }
 
@@ -2815,7 +2849,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* News error content (message). */
 .newsErrorContent {
-    font-size: 20px;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
 }
 #newsErrorLoading {
     display: flex;
@@ -2826,7 +2860,7 @@ input:checked + .toggleSwitchSlider:before {
 }
 /* News error retry button styles. */
 #newsErrorRetry {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     font-weight: bold;
     cursor: pointer;
     background: none;
@@ -2855,21 +2889,25 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Logo image. */
 #image_seal {
-    height: 70px;
-    width: auto;
+    display: block;
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 524.13 / 151.14;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
     position: relative;
-    border: 2px solid white;
     box-sizing: border-box;
-    border-radius: 50%;
 }
 
 /* Logo container styles. */
 #image_seal_container {
     position: relative;
-    height: 70px;
-    width: 70px;
-    border-radius: 50%;
-    margin-top: 50px;
+    align-self: flex-start;
+    flex-shrink: 0;
+    width: min(100%, clamp(140px, 18vw, 240px));
+    aspect-ratio: 524.13 / 151.14;
+    margin-top: clamp(24px, 6vh, 50px);
 }
 
 /* Logo container styles w/ update. */
@@ -2885,7 +2923,7 @@ input:checked + .toggleSwitchSlider:before {
     width: 100%;
     top: 0%;
     left: 0%;
-    border-radius: 50%;
+    border-radius: 8px;
     box-shadow: 0 0 15px #43c628;
     animation: glow-grow 4s ease-out infinite;
     background: rgba(0, 0, 0, 0.15);
@@ -2909,9 +2947,10 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     z-index: 1;
     top: 115%;
-    left: -17.5px;
-    font-family: 'Avenir Medium';
-    font-size: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Coolvetica', sans-serif;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
 #updateAvailableTooltip::after {
@@ -2954,14 +2993,20 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     flex-direction: column;
     position: relative;
-    top: 50px;
-    align-items: flex-start;
+    top: clamp(24px, 6vh, 50px);
+    align-items: center;
+    width: 100%;
+    min-width: 0;
     height: calc(100% - 50px);
 }
 
 /* Right hand user content container. */
 #user_content {
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
@@ -2970,6 +3015,8 @@ input:checked + .toggleSwitchSlider:before {
 
 /* User profile avatar container. */
 #avatarContainer {
+    order: -1;
+    flex-shrink: 0;
     border-radius: 50%;
     border: 2px solid #cad7e1;
     box-sizing: border-box;
@@ -3013,14 +3060,17 @@ input:checked + .toggleSwitchSlider:before {
 
 /* User profile name text. */
 #user_text {
-    font-size: 12px;
-    min-width: 135px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
+    width: 100%;
+    min-width: 0;
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0px 0px 20px black;
-    position: absolute;
-    right: 95px;
-    text-align: right;
+    position: static;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
     -webkit-user-select: initial;
 }
 
@@ -3031,7 +3081,7 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
     margin-top: 25px;
     height: calc(100% - 95px);
-    width: 70px;
+    width: 100%;
     align-items: center;
 }
 
@@ -3114,7 +3164,7 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     z-index: 1;
     right: 130%;
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     line-height: 20px;
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
@@ -3181,7 +3231,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Style for a general label on the bottom of the landing view. */
 .bot_label {
-    font-size: 9px;
+    font-size: clamp(10px, min(0.9184vw, 1.6304vh), 12px);
     letter-spacing: 1px;
     font-weight: bold;
     text-shadow: 0px 0px 0px #bebcbb;
@@ -3209,7 +3259,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Span which displays the player count of the selected server. */
 #player_count {
     color: #949494;
-    font-size: 8px;
+    font-size: clamp(10px, min(0.8163vw, 1.4493vh), 12px);
     font-weight: 900;
     text-shadow: 0px 0px 20px #949494;
     margin-left: 10px;
@@ -3224,10 +3274,10 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Icon which displays the status of the mojang services. */
 #mojang_status_icon {
-    font-size: 30px;
+    font-size: clamp(27px, min(3.0612vw, 5.4348vh), 39px);
     color: #848484;
     margin-left: 15px;
-    font-family: 'sans-serif';
+    font-family: 'Coolvetica', sans-serif;
 }
 
 /* Tooltip which displays more details about the mojang statuses. */
@@ -3242,8 +3292,8 @@ input:checked + .toggleSwitchSlider:before {
     border-radius: 4px;
     padding: 5px 10px;
     z-index: 1;
-    font-family: 'Avenir Medium';
-    font-size: 12px;
+    font-family: 'Coolvetica', sans-serif;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
     bottom: calc(100% + 15px);
     transform: translateX(-50%);
@@ -3291,7 +3341,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Non essential service title text. */
 #mojangStatusNETitle {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     padding: 0px 3px;
     text-align: center;
     letter-spacing: 1px;
@@ -3305,7 +3355,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Displays the name of the mojang service. */
 .mojangStatusName {
     width: 100%;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     letter-spacing: 1px;
     line-height: 12px;
     padding: 6px 0px;
@@ -3314,7 +3364,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Displays the status of the mojang service. */
 .mojangStatusIcon {
     margin-right: 10px;
-    font-size: 18.5px;
+    font-size: clamp(17px, min(1.8878vw, 3.3514vh), 24px);
     color: #848484;
 }
 
@@ -3376,7 +3426,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 11px;
+    font-size: clamp(10px, min(1.1224vw, 1.9928vh), 14px);
     line-height: 30px;
     display: flex;
     transition: 0.25s ease;
@@ -3401,7 +3451,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 2px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
     padding: 0px;
     transition: 0.25s ease;
     outline: none;
@@ -3437,7 +3487,7 @@ input:checked + .toggleSwitchSlider:before {
     font-weight: 900;
     letter-spacing: 1px;
     text-shadow: 0px 0px 0px #bebcbb;
-    font-size: 20px;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
     min-width: 53.21px;
     max-width: 53.21px;
     text-align: right;
@@ -3484,7 +3534,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Span which displays information about the status of the launch process. */
 #launch_details_text {
-    font-size: 11px;
+    font-size: clamp(10px, min(1.1224vw, 1.9928vh), 14px);
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -3557,8 +3607,8 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Overlay title styles. */
 #overlayTitle {
-    font-family: 'Avenir Medium';
-    font-size: 20px;
+    font-family: 'Coolvetica', sans-serif;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
     font-weight: bold;
     letter-spacing: 1px;
     -webkit-user-select: initial;
@@ -3566,7 +3616,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* Overlay description styles. */
 #overlayDesc {
-    font-size: 12px;
+    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
     font-weight: bold;
     -webkit-user-select: initial;
 }
@@ -3583,7 +3633,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3603,7 +3653,7 @@ input:checked + .toggleSwitchSlider:before {
 /* Overlay dismiss option styles. */
 #overlayDismiss {
     font-weight: bold;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     text-decoration: none;
     padding-top: 2.5px;
     background: none;
@@ -3635,8 +3685,8 @@ input:checked + .toggleSwitchSlider:before {
 /* Server selection header. */
 #serverSelectHeader,
 #accountSelectHeader {
-    font-family: 'Avenir Medium';
-    font-size: 20px;
+    font-family: 'Coolvetica', sans-serif;
+    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
     font-weight: bold;
     color: #fff;
     margin-bottom: 25px;
@@ -3763,13 +3813,13 @@ input:checked + .toggleSwitchSlider:before {
 
 /* The name of the server listing. */
 .serverListingName {
-    font-size: 14px;
+    font-size: clamp(13px, min(1.4286vw, 2.5362vh), 18px);
     font-weight: bold;
 }
 
 /* Description for the server listing. */
 .serverListingDescription {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     line-height: 10px;
     font-weight: bold;
     text-align: left;
@@ -3784,7 +3834,7 @@ input:checked + .toggleSwitchSlider:before {
 
 /* The minecraft version of the server listing. */
 .serverListingVersion {
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     text-align: center;
     display: flex;
     justify-content: center;
@@ -3799,7 +3849,7 @@ input:checked + .toggleSwitchSlider:before {
 /* The revision version of the server's manifest. */
 .serverListingRevision {
     color: #969696;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     line-height: 12px;
     padding: 0px 5px;
 }
@@ -3823,7 +3873,7 @@ input:checked + .toggleSwitchSlider:before {
     position: absolute;
     z-index: 1;
     left: 130%;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     transition: visibility 0s linear 0.25s, opacity 0.25s ease;
 }
 .serverListingStarTooltip::after {
@@ -3858,7 +3908,7 @@ input:checked + .toggleSwitchSlider:before {
     background: none;
     border: 1px solid #ffffff;
     color: white;
-    font-family: 'Avenir Medium';
+    font-family: 'Coolvetica', sans-serif;
     font-weight: bold;
     border-radius: 2px;
     padding: 0px 8.1px;
@@ -3883,7 +3933,7 @@ input:checked + .toggleSwitchSlider:before {
 #serverSelectCancel,
 #accountSelectCancel {
     font-weight: bold;
-    font-size: 10px;
+    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
     text-decoration: none;
     padding-top: 2.5px;
     color: rgba(202, 202, 202, 0.75);
@@ -3928,41 +3978,308 @@ input:checked + .toggleSwitchSlider:before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: min(420px, 75vw);
 }
 
-/* Spinner container. */
-#loadSpinnerContainer {
+
+#startupLoadingTrack {
     position: relative;
+    width: 100%;
+    aspect-ratio: 524.13 / 151.14;
+}
+
+#startupLoadingBase,
+#startupLoadingFill {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#startupLoadingBase {
+    filter: brightness(0);
+}
+
+#startupLoadingFill {
+    filter: brightness(0) invert(1);
+    clip-path: inset(0 calc(100% - var(--startup-progress)) 0 0);
+    transition: clip-path 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #startupLoadingFill {
+        transition: none;
+    }
+}
+
+/* Allow scaled text to wrap without fixed boxes clipping it. */
+#welcomeHeader, #welcomeDescription, #welcomeDescCTA,
+#loginSubheader, #loginDisclaimer, #overlayTitle, #overlayDesc,
+.settingsTabHeaderText, .settingsTabHeaderDesc,
+.serverListingName, .serverListingDescription, .serverListingRevision {
+    line-height: 1.4;
+}
+#overlayContent {
+    width: min(420px, 85vw);
+    max-height: 85%;
+    overflow-y: auto;
+}
+#server_status_wrapper {
+    width: auto;
+    flex-wrap: wrap;
+}
+#launch_progress_label {
+    min-width: 4ch;
+    max-width: none;
+}
+#launch_details_right {
+    min-width: 0;
+}
+#updateAvailableTooltip, #settingsTooltip, .serverListingStarTooltip {
+    height: auto;
+    min-height: 1.4em;
+    width: max-content;
+    max-width: min(260px, 70vw);
+    line-height: 1.4;
+    padding: 4px 8px;
+    white-space: normal;
+}
+.serverListingDetails {
+    height: auto;
+    min-height: 50px;
+    min-width: 0;
+    gap: 4px;
+}
+.serverListingVersion, .serverListingStarWrapper {
+    height: auto;
+    min-height: 1.4em;
+    line-height: 1.4;
+}
+@media (max-width: 800px) {
+    #landingContainer > #lower > #left #content {
+        left: 0;
+        padding-inline: 12px;
+        flex-wrap: wrap;
+        line-height: 1.4;
+    }
+    #settingsNavHeaderText {
+        text-align: center;
+        padding-inline: 8px;
+    }
+}
+
+/* Tabler's outline icons share a single scale and inherit control colors. */
+svg.tabler-icon {
+    width: 1.4em;
+    height: 1.4em;
+    fill: none !important;
+    stroke: currentColor;
+    flex-shrink: 0;
+    vertical-align: middle;
+    pointer-events: none;
+}
+svg.tabler-icon path {
+    fill: none;
+}
+.frameButton svg.tabler-icon {
+    width: 14px;
+    height: 14px;
+}
+#newsNavigationLeftSVG, #newsNavigationRightSVG {
+    transform: none;
+    width: 1.5em;
+    height: 1.5em;
+}
+.loginSVG.tabler-icon {
+    width: 26px;
+    height: 26px;
+}
+#loginSVG, .settingsFileSelSVG.tabler-icon {
+    width: 1.5em;
+    height: 1.5em;
+}
+#loginCancelIcon .tabler-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* The sidebar and footer grow with the available viewport. */
+#landingContainer {
+    --landing-footer-height: clamp(130px, 22vh, 270px);
+    --landing-control-font: clamp(14px, min(1.4vw, 2.6vh), 28px);
+}
+#landingContainer > #upper {
+    height: calc(100% - var(--landing-footer-height));
+}
+#landingContainer > #upper > #right {
+    flex-basis: clamp(190px, 21vw, 420px);
+    padding-inline: clamp(16px, 2vw, 40px);
+}
+#rightContainer {
+    top: clamp(24px, 5vh, 70px);
+    height: calc(100% - clamp(24px, 5vh, 70px));
+}
+#user_content {
+    gap: clamp(12px, 2vh, 24px);
+}
+#avatarContainer {
+    width: clamp(80px, min(8vw, 16vh), 170px);
+    height: auto;
+    aspect-ratio: 1;
+}
+#avatarOverlay, #user_text {
+    font-size: var(--landing-control-font);
+}
+#mediaContent {
+    margin-top: clamp(20px, 4vh, 48px);
+    height: auto;
+}
+#settingsMediaContainer {
+    height: auto;
+}
+#settingsMediaButton {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: clamp(52px, 6vw, 96px);
+    height: clamp(52px, 6vw, 96px);
+    position: relative;
 }
-
-/* Stationary image for the spinner. */
-#loadCenterImage {
-    position: absolute;
-    width: 277px;
-    height: auto;
+#settingsSVG, .mediaButton:hover #settingsSVG,
+.mediaButton:focus #settingsSVG, .mediaButton:active #settingsSVG {
+    width: clamp(28px, 3vw, 52px);
+    height: clamp(28px, 3vw, 52px);
 }
-
-/* Rotating image for the spinner. */
-#loadSpinnerImage {
-    width: 280px;
-    height: auto;
-    z-index: 400;
+#landingContainer > #lower {
+    height: var(--landing-footer-height);
+    display: grid;
+    grid-template-columns: 1fr 0.65fr 1fr;
+    gap: clamp(12px, 2vw, 40px);
+    padding-inline: clamp(16px, 4vw, 80px);
+    box-sizing: border-box;
+    align-items: center;
 }
-
-/* Rotating animation for the spinner. */
-@keyframes rotating {
-    from {
-        transform: rotate(0deg);
+#landingContainer > #lower > #left,
+#landingContainer > #lower > #center,
+#landingContainer > #lower > #right {
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+}
+#landingContainer > #lower .bot_wrapper {
+    width: 100%;
+    min-width: 0;
+}
+#landingContainer > #lower > #left #content {
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(10px, 2vh, 20px);
+    line-height: 1.4;
+}
+#landingContainer > #lower > #center #content {
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+#landingContainer > #lower > #right #launch_content {
+    top: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(8px, 1.6vh, 20px);
+}
+#lower .bot_divider {
+    display: none;
+}
+#lower .bot_label, #player_count, #newsButtonText {
+    font-size: var(--landing-control-font);
+    line-height: 1.4;
+}
+#server_status_wrapper, #mojangStatusWrapper {
+    align-items: center;
+    gap: 8px;
+}
+#player_count {
+    margin-left: 0;
+}
+#mojang_status_icon {
+    margin-left: 0;
+    line-height: 1;
+}
+#launch_button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: clamp(26px, min(3vw, 6vh), 56px);
+}
+#server_selection_button {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+}
+#newsButtonSVG {
+    width: clamp(24px, 2.5vw, 44px);
+    height: clamp(24px, 2.5vw, 44px);
+    margin: 0;
+}
+#newsButtonText {
+    justify-content: center;
+}
+#launch_details {
+    top: 0;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+}
+#launch_details_right {
+    flex: 1;
+}
+#launch_progress[value] {
+    width: 100%;
+    height: clamp(4px, 0.5vh, 8px);
+}
+#launch_progress_label {
+    font-size: clamp(22px, 2.5vw, 44px);
+}
+#launch_details_text {
+    font-size: var(--landing-control-font);
+    max-width: 100%;
+}
+@media (max-width: 700px) {
+    #landingContainer {
+        --landing-control-font: 12px;
     }
-    to {
-        transform: rotate(360deg);
+    #landingContainer > #upper > #right {
+        flex-basis: 150px;
+        padding-inline: 12px;
+    }
+    #landingContainer > #lower {
+        grid-template-columns: 1fr 0.55fr 1fr;
+        gap: 8px;
+        padding-inline: 12px;
     }
 }
 
-/* Class which is applied when the spinner image is spinning. */
-.rotating {
-    animation: rotating 10s linear infinite;
+#launcherBackgroundVideo {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    pointer-events: none;
+}
+#landingContainer > #lower .launchPanel {
+    border: 2px solid #ffffff;
+    border-radius: 12px;
+    padding: clamp(12px, 1.5vw, 24px);
+    box-sizing: border-box;
 }

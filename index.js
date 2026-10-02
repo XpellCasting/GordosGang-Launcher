@@ -2,16 +2,33 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell, protocol, net } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
-const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
 const path                              = require('path')
 const semver                            = require('semver')
 const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
+
+// Keep video streaming separate from ejs-electron's buffered file handler.
+protocol.registerSchemesAsPrivileged([{
+    scheme: 'utgc-media',
+    privileges: { standard: true, secure: true, stream: true, supportFetchAPI: true }
+}])
+
+app.on('ready', () => {
+    protocol.handle('utgc-media', (request) => {
+        if(request.url !== 'utgc-media://background/video.mp4'){
+            return new Response(null, { status: 404 })
+        }
+        return net.fetch(pathToFileURL(path.join(__dirname, 'app', 'assets', 'videos', 'utgc-background.mp4')).toString(), {
+            headers: request.headers,
+            bypassCustomProtocolHandlers: true
+        })
+    })
+})
 
 // Setup Lang
 LangLoader.setupLanguage()
@@ -130,7 +147,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('AppIcon')
     })
 
     msftAuthWindow.on('closed', () => {
@@ -148,8 +165,8 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGIN, (ipcEvent, ...arguments_) => {
             let queryMap = {}
             
             new URL(uri).searchParams.forEach((v, k) => {
-                queryMap[k] = v;
-            });
+                queryMap[k] = v
+            })
 
             ipcEvent.reply(MSFT_OPCODE.REPLY_LOGIN, MSFT_REPLY_TYPE.SUCCESS, queryMap, msftAuthViewSuccess)
 
@@ -181,7 +198,7 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
         width: 520,
         height: 600,
         frame: true,
-        icon: getPlatformIcon('SealCircle')
+        icon: getPlatformIcon('AppIcon')
     })
 
     msftLogoutWindow.on('closed', () => {
@@ -227,7 +244,7 @@ function createWindow() {
     win = new BrowserWindow({
         width: 980,
         height: 552,
-        icon: getPlatformIcon('SealCircle'),
+        icon: getPlatformIcon('AppIcon'),
         frame: false,
         webPreferences: {
             preload: path.join(__dirname, 'app', 'assets', 'js', 'preloader.js'),
@@ -239,7 +256,6 @@ function createWindow() {
     remoteMain.enable(win.webContents)
 
     const data = {
-        bkid: Math.floor((Math.random() * fs.readdirSync(path.join(__dirname, 'app', 'assets', 'images', 'backgrounds')).length)),
         lang: (str, placeHolders) => LangLoader.queryEJS(str, placeHolders)
     }
     Object.entries(data).forEach(([key, val]) => ejse.data(key, val))
