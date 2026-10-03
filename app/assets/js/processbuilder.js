@@ -14,11 +14,38 @@ const logger = LoggerUtil.getLogger('ProcessBuilder')
 
 
 /**
+ * Config values forced on macOS only.
+ *
+ * Apple's OpenGL is an emulation layer over Metal, and some mods drive it into a
+ * native segfault that no Java-side handler can catch. These fixes are specific
+ * to one platform, so shipping them through the distribution would degrade
+ * Windows and Linux for a bug those platforms do not have.
+ *
+ * `mod` is a filename fragment: the config is only touched when that module is
+ * actually part of the server, so removing the mod stops the workaround too.
+ */
+const DARWIN_CONFIG_OVERRIDES = [
+    {
+        // Distant Horizons' generic object renderer draws LOD beacon beams and
+        // clouds. On Apple Silicon it segfaults inside GLEngine's
+        // gleRunVertexSubmitImmediate, on both its instanced draw path and the
+        // direct one it falls back to, so the whole feature has to stay off.
+        mod: 'DistantHorizons',
+        file: path.join('config', 'DistantHorizons.toml'),
+        section: '[client.advanced.graphics.genericRendering]',
+        values: {
+            enableGenericRendering: 'false',
+            enableInstancedRendering: 'false'
+        }
+    }
+]
+
+/**
  * Only forge and fabric are top level mod loaders.
- * 
+ *
  * Forge 1.13+ launch logic is similar to fabrics, for now using usingFabricLoader flag to
  * change minor details when needed.
- * 
+ *
  * Rewrite of this module may be needed in the future.
  */
 class ProcessBuilder {
@@ -46,6 +73,7 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        this.applyPlatformConfigOverrides()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
@@ -139,6 +167,103 @@ class ProcessBuilder {
      */
     static isModEnabled(modCfg, required = null){
         return modCfg != null ? ((typeof modCfg === 'boolean' && modCfg) || (typeof modCfg === 'object' && (typeof modCfg.value !== 'undefined' ? modCfg.value : true))) : required != null ? required.def : true
+    }
+
+    /**
+     * Force the config values this platform needs before the game starts.
+     *
+     * The distribution cannot carry these: it is shared by every OS, and the
+     * launcher restores any file it manages, so a per-platform value has to be
+     * written here instead. See DARWIN_CONFIG_OVERRIDES for why each one exists.
+     */
+    applyPlatformConfigOverrides(){
+        if(process.platform !== 'darwin'){
+            return
+        }
+        for(const override of DARWIN_CONFIG_OVERRIDES){
+            if(!this._serverHasModule(override.mod)){
+                continue
+            }
+            try {
+                const changed = this._forceConfigValues(path.join(this.gameDir, override.file), override.section, override.values)
+                if(changed.length > 0){
+                    logger.info(`Applied macOS workaround to ${override.file}: ${changed.join(', ')}`)
+                }
+            } catch(err) {
+                // A failed workaround must not block launch. Worst case the mod
+                // keeps its own setting and the player sees the original bug.
+                logger.error(`Failed to apply macOS workaround to ${override.file}.`, err)
+            }
+        }
+    }
+
+    /**
+     * Whether a module whose artifact filename contains the given fragment is
+     * part of this server. Extras are declared at the top level.
+     */
+    _serverHasModule(fragment){
+        return this.server.modules.some(mdl => (mdl.rawModule.artifact?.path ?? '').includes(fragment))
+    }
+
+    /**
+     * Set each key to the given value inside one config section, preserving
+     * everything else in the file.
+     *
+     * @returns {string[]} The keys whose value actually changed.
+     */
+    _forceConfigValues(absPath, section, values){
+        const keys = Object.keys(values)
+        const stanza = [section, ...keys.map(key => `${key} = ${values[key]}`)]
+
+        if(!fs.existsSync(absPath)){
+            // A mod writes its config on first run, so a fresh install has
+            // nothing to patch yet. A partial file is enough: the mod fills in
+            // every key it does not find from its own defaults and rewrites the
+            // file in full.
+            fs.ensureDirSync(path.dirname(absPath))
+            fs.writeFileSync(absPath, stanza.join('\n') + '\n', 'utf8')
+            return keys
+        }
+
+        const lines = fs.readFileSync(absPath, 'utf8').split('\n')
+        const start = lines.findIndex(line => line.trim() === section)
+        if(start === -1){
+            // Appending is safe only because the section is absent; a duplicate
+            // table header would be invalid TOML.
+            fs.appendFileSync(absPath, '\n' + stanza.join('\n') + '\n', 'utf8')
+            return keys
+        }
+
+        // Stay inside this section so a key of the same name elsewhere in the
+        // file is left alone.
+        let end = lines.length
+        for(let i = start + 1; i < lines.length; i++){
+            if(lines[i].trim().startsWith('[')){
+                end = i
+                break
+            }
+        }
+
+        const changed = []
+        for(const key of keys){
+            const pattern = new RegExp(`^(\\s*)${key}\\s*=\\s*(.*)$`)
+            for(let i = start + 1; i < end; i++){
+                const match = lines[i].match(pattern)
+                if(match == null){
+                    continue
+                }
+                if(match[2].trim() !== values[key]){
+                    lines[i] = `${match[1]}${key} = ${values[key]}`
+                    changed.push(key)
+                }
+                break
+            }
+        }
+
+        if(changed.length > 0){
+            fs.writeFileSync(absPath, lines.join('\n'), 'utf8')
+        }
+        return changed
     }
 
     /**
@@ -372,7 +497,7 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=UTGC Launcher')
+            args.push('-Xdock:name=GordosGang Launcher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -423,7 +548,7 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=UTGC Launcher')
+            args.push('-Xdock:name=GordosGang Launcher')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -525,7 +650,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Helios-Launcher')
+                            val = args[i].replace(argDiscovery, 'GordosGang-Launcher')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)

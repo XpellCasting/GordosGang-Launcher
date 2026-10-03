@@ -1,21 +1,15 @@
 <div id="landingContainer" style="display: none;">
     <div id="upper">
         <div id="left">
-            <div id="image_seal_container">
-                <img id="image_seal" src="assets/images/UTGC.svg" alt="UTGC" width="524" height="151"/>
-                <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
+            <div id="image_seal_container" role="button" tabindex="0">
+                <span class="updateBadgeDot" aria-hidden="true"></span>
+                <span id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></span>
             </div>
         </div>
         <div id="content">
         </div>
         <div id="right">
             <div id="rightContainer">
-                <div id="user_content">
-                    <span id="user_text"><%- lang('landing.usernamePlaceholder') %></span>
-                    <div id="avatarContainer">
-                        <button id="avatarOverlay"><%- lang('landing.usernameEditButton') %></button>
-                    </div>
-                </div>
                 <div id="mediaContent">
                     <div id="internalMedia">
                         <div class="mediaContainer" id="settingsMediaContainer">
@@ -45,31 +39,32 @@
     <div id="lower">
         <div id="left">
             <div class="bot_wrapper">
-                <div id="content">
-                    <div id="server_status_wrapper">
-                        <span class="bot_label" id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
-                        <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
-                    </div>
-                    <div class="bot_divider"></div>
-                    <div id="mojangStatusWrapper">
-                        <span class="bot_label"><%- lang('landing.mojangStatus') %></span>
-                        <span id="mojang_status_icon">&#8226;</span>
-                        <div id="mojangStatusTooltip">
-                            <div id="mojangStatusTooltipTitle"><%- lang('landing.mojangStatusTooltipTitle') %></div>
-                            <div id="mojangStatusEssentialContainer">
-                                <!-- Essential Mojang services are populated here. -->
-                            </div>
-                            <div id="mojangStatusNEContainer">
-                                <div class="mojangStatusNEBar"></div>
-                                <div id="mojangStatusNETitle"><%- lang('landing.mojangStatusNETitle') %></div>
-                                <div class="mojangStatusNEBar"></div>
-                            </div>
-                            <div id="mojangStatusNonEssentialContainer">
-                                <!-- Non Essential Mojang services are populated here. -->
-                            </div>
+                <section id="serverCard" data-state="checking" aria-live="polite">
+                    <div id="serverCardHead">
+                        <img id="serverCardIcon" src="./assets/images/AppIcon.png" alt="" width="44" height="44">
+                        <div id="serverCardTitle">
+                            <span id="serverCardName"><%- lang('landing.serverStatus') %></span>
+                            <span id="serverCardStatus">
+                                <span id="serverCardDot" aria-hidden="true"></span>
+                                <span id="serverCardStatusText"><%- lang('landing.serverCardChecking') %></span>
+                                <span id="serverCardLatency"></span>
+                            </span>
                         </div>
                     </div>
-                </div>
+                    <p id="serverCardMotd"></p>
+                    <div id="serverCardPlayers">
+                        <div id="serverCardMeter" aria-hidden="true"></div>
+                        <span id="serverCardPlayerText"></span>
+                        <div id="serverCardHeads"></div>
+                    </div>
+                    <div id="serverCardFoot">
+                        <span id="serverCardVersion"></span>
+                        <button id="serverCardAddress" type="button" title="<%- lang('landing.serverCardCopy') %>">
+                            <span id="serverCardAddressText"></span>
+                            <svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
+                        </button>
+                    </div>
+                </section>
             </div>
         </div>
         <div id="center">
@@ -77,7 +72,6 @@
                 <div id="content">
                     <button id="newsButton">
                         <!--<img src="assets/images/icons/arrow.svg" id="newsButtonSVG"/>-->
-                        <div id="newsButtonAlert" style="display: none;"></div>
                         <svg class="tabler-icon arrowLine" aria-hidden="true" focusable="false" id="newsButtonSVG"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
@@ -91,15 +85,22 @@
 >
   <path d="M6 15l6 -6l6 6" />
 </svg>
-                        &#10;<span id="newsButtonText"><%- lang('landing.newsButton') %></span>
+                        <span id="newsButtonText"><%- lang('landing.newsButton') %><span id="newsButtonAlert" style="display: none;"></span></span>
                     </button>
                 </div>
             </div>
         </div>
         <div id="right">
             <div class="bot_wrapper launchPanel">
+                <div id="user_content">
+                    <div id="avatarStage">
+                        <div id="avatarContainer" aria-hidden="true"></div>
+                        <button id="avatarOverlay" type="button" aria-label="<%- lang('landing.usernameEditButton') %>"></button>
+                    </div>
+                    <span id="user_text"><%- lang('landing.usernamePlaceholder') %></span>
+                </div>
                 <div id="launch_content">
-                    <button id="launch_button"><svg class="tabler-icon" aria-hidden="true" focusable="false"
+                    <button id="launch_button"><svg class="tabler-icon launchIcon" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
@@ -111,7 +112,7 @@
   stroke-linejoin="round"
 >
   <path d="M7 4v16l13 -8l-13 -8" />
-</svg><%- lang('landing.launchButton') %></button>
+</svg><span class="launchLabel"><%- lang('landing.launchButton') %></span></button>
                     <div class="bot_divider"></div>
                     <button id="server_selection_button" class="bot_label"><%- lang('landing.launchButtonPlaceholder') %></button>
                 </div>
@@ -129,76 +130,54 @@
         </div>
     </div>
     <div id="newsContainer">
-        <div id="newsContent" article="-1" style="display: none;">
-            <div id="newsStatusContainer">
-                <div id="newsStatusContent">
-                    <div id="newsTitleContainer">
-                        <a id="newsArticleTitle" href="#">Lorem Ipsum</a>
-                    </div>
-                    <div id="newsMetaContainer">
-                        <div id="newsArticleDateWrapper">
-                            <span id="newsArticleDate">Mar 15, 44 BC, 9:14 AM</span>
+        <section id="newsPanel" aria-label="<%- lang('landing.newsButton') %>">
+            <div id="newsContent" article="-1" style="display: none;">
+                <header id="newsHeader">
+                    <div id="newsHeading">
+                        <div id="newsKicker">
+                            <img id="newsKickerIcon" src="./assets/images/AppIcon.png" alt="" width="20" height="20">
+                            <span><%- lang('landing.newsButton') %></span>
+                            <span class="newsKickerSep" aria-hidden="true"></span>
+                            <time id="newsArticleDate"></time>
                         </div>
-                        <div id="newsArticleAuthorWrapper">
-                            <span id="newsArticleAuthor">by Cicero</span>
-                        </div>
-                        <a href="#" id="newsArticleComments">0 Comments</a>
+                        <h2 id="newsTitleContainer"><a id="newsArticleTitle" href="#"></a></h2>
+                        <span id="newsArticleAuthor"></span>
                     </div>
-                </div>
-                <div id="newsNavigationContainer">
-                    <button id="newsNavigateLeft">
-                        <svg class="tabler-icon arrowLine" aria-hidden="true" focusable="false" id="newsNavigationLeftSVG"
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <path d="M15 6l-6 6l6 6" />
-</svg>
-                    </button>
-                    <span id="newsNavigationStatus"><%- lang('landing.newsNavigationStatus', { currentPage: 1, totalPages: 1 }) %></span>
-                    <button id="newsNavigateRight">
-                        <svg class="tabler-icon arrowLine" aria-hidden="true" focusable="false" id="newsNavigationRightSVG"
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <path d="M9 6l6 6l-6 6" />
-</svg>
-                    </button>
-                </div>
-            </div>
-            <div id="newsArticleContainer">
-                <div id="newsArticleContent">
+                    <nav id="newsNavigationContainer">
+                        <button id="newsNavigateLeft" type="button" aria-label="<%- lang('landing.newsPrevious') %>">
+                            <svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6l6 6" /></svg>
+                        </button>
+                        <span id="newsNavigationStatus"><%- lang('landing.newsNavigationStatus', { currentPage: 1, totalPages: 1 }) %></span>
+                        <button id="newsNavigateRight" type="button" aria-label="<%- lang('landing.newsNext') %>">
+                            <svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6l-6 6" /></svg>
+                        </button>
+                    </nav>
+                </header>
+                <div id="newsArticleContainer">
                     <div id="newsArticleContentScrollable">
                         <!-- Article Content -->
                     </div>
                 </div>
+                <footer id="newsFooter">
+                    <a id="newsArticleLink" href="#"><%- lang('landing.newsOpenLink') %>
+                        <svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" /><path d="M11 13l9 -9" /><path d="M15 4h5v5" /></svg>
+                    </a>
+                </footer>
             </div>
-        </div>
-        <div id="newsErrorContainer">
-            <div id="newsErrorLoading">
-                <span id="nELoadSpan" class="newsErrorContent"><%- lang('landing.newsErrorLoadSpan') %></span>
+            <div id="newsErrorContainer">
+                <div id="newsErrorLoading">
+                    <span class="ggLoader" aria-hidden="true"><i></i><i></i><i></i></span>
+                    <span id="nELoadSpan" class="newsErrorContent"><%- lang('landing.newsErrorLoadSpan') %></span>
+                </div>
+                <div id="newsErrorFailed" style="display: none;">
+                    <span id="nEFailedSpan" class="newsErrorContent"><%- lang('landing.newsErrorFailedSpan') %></span>
+                    <button id="newsErrorRetry" type="button"><%- lang('landing.newsErrorRetryButton') %></button>
+                </div>
+                <div id="newsErrorNone" style="display: none;">
+                    <span id="nENoneSpan" class="newsErrorContent"><%- lang('landing.newsErrorNoneSpan') %></span>
+                </div>
             </div>
-            <div id="newsErrorFailed" style="display: none;">
-                <span id="nEFailedSpan" class="newsErrorContent"><%- lang('landing.newsErrorFailedSpan') %></span>
-                <button id="newsErrorRetry"><%- lang('landing.newsErrorRetryButton') %></button>
-            </div>
-            <div id="newsErrorNone" style="display: none;">
-                <span id="nENoneSpan" class="newsErrorContent"><%- lang('landing.newsErrorNoneSpan') %></span>
-            </div>
-        </div>
+        </section>
     </div>
     <script src="./assets/js/scripts/landing.js"></script>
 </div>

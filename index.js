@@ -2,9 +2,10 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell, protocol, net } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
+const fs                                = require('fs')
 const isDev                             = require('./app/assets/js/isdev')
 const path                              = require('path')
 const semver                            = require('semver')
@@ -12,23 +13,16 @@ const { pathToFileURL }                 = require('url')
 const { AZURE_CLIENT_ID, MSFT_OPCODE, MSFT_REPLY_TYPE, MSFT_ERROR, SHELL_OPCODE } = require('./app/assets/js/ipcconstants')
 const LangLoader                        = require('./app/assets/js/langloader')
 
-// Keep video streaming separate from ejs-electron's buffered file handler.
-protocol.registerSchemesAsPrivileged([{
-    scheme: 'utgc-media',
-    privileges: { standard: true, secure: true, stream: true, supportFetchAPI: true }
-}])
-
-app.on('ready', () => {
-    protocol.handle('utgc-media', (request) => {
-        if(request.url !== 'utgc-media://background/video.mp4'){
-            return new Response(null, { status: 404 })
-        }
-        return net.fetch(pathToFileURL(path.join(__dirname, 'app', 'assets', 'videos', 'utgc-background.mp4')).toString(), {
-            headers: request.headers,
-            bypassCustomProtocolHandlers: true
-        })
-    })
-})
+// Builds named "UTGC Launcher" kept accounts and settings under that product
+// name. Carry the folder over once so nobody has to sign in again.
+const legacyUserData = path.join(app.getPath('appData'), 'UTGC Launcher')
+if(!fs.existsSync(app.getPath('userData')) && fs.existsSync(legacyUserData)){
+    try {
+        fs.renameSync(legacyUserData, app.getPath('userData'))
+    } catch {
+        app.setPath('userData', legacyUserData)
+    }
+}
 
 // Setup Lang
 LangLoader.setupLanguage()
@@ -120,11 +114,6 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
         }
     }
 })
-
-// Disable hardware acceleration.
-// https://electronjs.org/docs/tutorial/offscreen-rendering
-app.disableHardwareAcceleration()
-
 
 const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
 
@@ -244,6 +233,9 @@ function createWindow() {
     win = new BrowserWindow({
         width: 980,
         height: 552,
+        // Below this the play panel and the server card no longer fit side by side.
+        minWidth: 860,
+        minHeight: 520,
         icon: getPlatformIcon('AppIcon'),
         frame: false,
         webPreferences: {
@@ -251,7 +243,7 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false
         },
-        backgroundColor: '#171614'
+        backgroundColor: '#0b0820'
     })
     remoteMain.enable(win.webContents)
 
@@ -281,14 +273,14 @@ function createMenu() {
 
         // Extend default included application menu to continue support for quit keyboard shortcut
         let applicationSubMenu = {
-            label: 'Application',
+            label: 'GordosGang Launcher',
             submenu: [{
-                label: 'About Application',
+                label: 'Acerca de GordosGang Launcher',
                 selector: 'orderFrontStandardAboutPanel:'
             }, {
                 type: 'separator'
             }, {
-                label: 'Quit',
+                label: 'Salir',
                 accelerator: 'Command+Q',
                 click: () => {
                     app.quit()
@@ -298,31 +290,31 @@ function createMenu() {
 
         // New edit menu adds support for text-editing keyboard shortcuts
         let editSubMenu = {
-            label: 'Edit',
+            label: 'Editar',
             submenu: [{
-                label: 'Undo',
+                label: 'Deshacer',
                 accelerator: 'CmdOrCtrl+Z',
                 selector: 'undo:'
             }, {
-                label: 'Redo',
+                label: 'Rehacer',
                 accelerator: 'Shift+CmdOrCtrl+Z',
                 selector: 'redo:'
             }, {
                 type: 'separator'
             }, {
-                label: 'Cut',
+                label: 'Cortar',
                 accelerator: 'CmdOrCtrl+X',
                 selector: 'cut:'
             }, {
-                label: 'Copy',
+                label: 'Copiar',
                 accelerator: 'CmdOrCtrl+C',
                 selector: 'copy:'
             }, {
-                label: 'Paste',
+                label: 'Pegar',
                 accelerator: 'CmdOrCtrl+V',
                 selector: 'paste:'
             }, {
-                label: 'Select All',
+                label: 'Seleccionar todo',
                 accelerator: 'CmdOrCtrl+A',
                 selector: 'selectAll:'
             }]
@@ -355,6 +347,21 @@ function getPlatformIcon(filename){
     return path.join(__dirname, 'app', 'assets', 'images', `${filename}.${ext}`)
 }
 
+// Packaged builds take their icon from the bundle; an unpackaged run would
+// otherwise show Electron's.
+function applyBranding(){
+    app.setAboutPanelOptions({
+        applicationName: 'GordosGang Launcher',
+        applicationVersion: app.getVersion(),
+        copyright: 'Copyright © 2026 GordosGang',
+        iconPath: path.join(__dirname, 'app', 'assets', 'images', 'AppIcon.png')
+    })
+    if(process.platform === 'darwin' && !app.isPackaged){
+        app.dock.setIcon(path.join(__dirname, 'app', 'assets', 'images', 'AppIcon.png'))
+    }
+}
+
+app.on('ready', applyBranding)
 app.on('ready', createWindow)
 app.on('ready', createMenu)
 
@@ -371,5 +378,8 @@ app.on('activate', () => {
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
         createWindow()
+    } else if (!win.isVisible()) {
+        // Hidden while the game runs; the dock icon brings it back.
+        win.show()
     }
 })

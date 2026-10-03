@@ -17,8 +17,168 @@
     font-display: swap;
 }
 
+/* Pixel display face for the few words that carry the GordosGang voice:
+   the play action and view titles. SIL Open Font License, see
+   fonts/PixelifySans-OFL.txt. */
+@font-face {
+    font-family: 'Pixelify Sans';
+    src: url('../fonts/pixelify-sans-latin-400-normal.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Pixelify Sans';
+    src: url('../fonts/pixelify-sans-latin-700-normal.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+}
+
 body, body * {
     font-family: 'Coolvetica', sans-serif;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Design tokens                                                               *
+ *                                                                             *
+ * The launcher sits on the GordosGang night scene: ink-blue sky, a violet     *
+ * block logo and warm lantern light. Surfaces are tinted from the sky, the    *
+ * active color is the logo's violet, and lantern amber is kept for the few     *
+ * things that ask for attention (updates, unread news).                       *
+ *                                                                             *
+ ******************************************************************************/
+
+:root {
+    /* 4px spacing scale. Replaces the ad-hoc 5/10/25px values. */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    /* One gap between an icon and the label it belongs to, everywhere. */
+    --gap-icon-label: 12px;
+
+    /* Tight corners: the world is built from blocks. */
+    --radius-sm: 3px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+
+    /* Night sky, from deepest to the lift used for hover. */
+    --night-0: #0b0820;
+    --night-1: #120d33;
+    --night-2: #1b1447;
+    --night-3: #261c5e;
+
+    /* Surfaces layered over the background art. */
+    --surface-1: rgba(14, 10, 40, 0.80);
+    --surface-2: rgba(18, 13, 51, 0.92);
+    --surface-3: rgba(24, 17, 64, 0.96);
+
+    /* Hairlines, tinted from the logo's violet rather than gray. */
+    --line-soft: rgba(196, 160, 255, 0.16);
+    --line: rgba(196, 160, 255, 0.30);
+    --line-strong: rgba(214, 178, 255, 0.62);
+
+    /* Moonlight text. Secondary tones keep the sky's hue instead of gray. */
+    --text-1: #f7f2ff;
+    --text-2: rgba(232, 222, 255, 0.84);
+    --text-3: rgba(212, 198, 245, 0.68);
+    --text-on-accent: #ffffff;
+
+    /* The logo's violet. --accent is the fill (white text holds 5:1 on it),
+       --accent-hi is the same hue lifted for lines, focus and text on night. */
+    --accent: #9b30ef;
+    --accent-hover: #ab45fa;
+    --accent-hi: #cf8bff;
+    --accent-deep: #4e138f;
+    --accent-dim: rgba(155, 48, 239, 0.22);
+    --accent-line: rgba(207, 139, 255, 0.72);
+
+    /* Lantern light from the cabin windows. Attention only. */
+    --lantern: #ffb65c;
+
+    --status-ok: #7fd14f;
+    --status-bad: #ff5d6c;
+
+    /* Depth. Offset plus blur, never a zero-offset halo. Shadows are cast in
+       the sky's ink rather than neutral black. */
+    --shadow-1: 0 2px 8px rgba(5, 2, 20, 0.45);
+    --shadow-2: 0 12px 32px rgba(5, 2, 20, 0.60);
+    --shadow-3: 0 24px 64px rgba(5, 2, 20, 0.70);
+
+    /* Block extrusion, the same depth the painted logo letters carry. */
+    --extrude: 0 4px 0 var(--accent-deep);
+    --extrude-pressed: 0 1px 0 var(--accent-deep);
+
+    --font-display: 'Pixelify Sans', 'Coolvetica', sans-serif;
+
+    /* Motion. Exponential ease-out; one shared vocabulary. */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-fast: 90ms;
+    --dur: 160ms;
+    --dur-slow: 240ms;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Browser-painted surfaces                                                    *
+ *                                                                             *
+ * Selection, caret, scrollbars and focus rings ship with defaults that belong  *
+ * to no design system. They are themed here so they read as part of the        *
+ * launcher rather than as the operating system showing through.                *
+ *                                                                             *
+ ******************************************************************************/
+
+::selection {
+    background: var(--accent);
+    color: var(--text-on-accent);
+}
+
+:root {
+    accent-color: var(--accent);
+    caret-color: var(--accent-hi);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(196, 160, 255, 0.24);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(207, 139, 255, 0.45);
+    background-clip: content-box;
+}
+
+/* A single, visible keyboard focus treatment for every control. */
+:focus-visible {
+    outline: 2px solid var(--accent-hi);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+/* The launcher relies on :focus-visible, so the legacy rings are dropped
+   rather than left to double up on mouse clicks. */
+:focus:not(:focus-visible) {
+    outline: none;
 }
 
 /*******************************************************************************
@@ -52,7 +212,7 @@ html {
 
 body {
     font-size: 1rem;
-    background-image: url('../images/backgrounds/utgc-background.png');
+    background-image: url('../images/backgrounds/gordosgang-background.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -91,8 +251,8 @@ body, button {
     z-index: 100;
     display: flex;
     flex-direction: column;
-    transition: background-color 1s ease;
-    /*background-color: rgba(0, 0, 0, 0.5);*/
+    transition: background-color var(--dur) var(--ease-out);
+    background-color: rgba(0, 0, 0, 0.5);
     -webkit-user-select: none;
 }
 
@@ -926,57 +1086,11 @@ body, button {
     position: relative;
 }
 
-.waitingSpinner:before {
-    transform: rotateX(60deg) rotateY(45deg) rotateZ(45deg);
-    animation: 750ms rotateBefore infinite linear reverse;
-}
-.waitingSpinner:after {
-    transform: rotateX(240deg) rotateY(45deg) rotateZ(45deg);
-    animation: 750ms rotateAfter infinite linear;
-}
-.waitingSpinner:before,
-.waitingSpinner:after {
-    box-sizing: border-box;
-    content: '';
-    display: block;
-    position: fixed;
-    top: calc(50% - 5em);
-    /* left: 50%; */
-    margin-top: -5em;
-    margin-left: -5em;
-    width: 10em;
-    height: 10em;
-    transform-style: preserve-3d;
-    transform-origin: 50%;
-    transform: rotateY(50%);
-    perspective-origin: 50% 50%;
-    perspective: 340px;
-    background-size: 10em 10em;
-    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjI2NnB4IiBoZWlnaHQ9IjI5N3B4IiB2aWV3Qm94PSIwIDAgMjY2IDI5NyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyI+CiAgICA8dGl0bGU+c3Bpbm5lcjwvdGl0bGU+CiAgICA8ZGVzY3JpcHRpb24+Q3JlYXRlZCB3aXRoIFNrZXRjaCAoaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoKTwvZGVzY3JpcHRpb24+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBza2V0Y2g6dHlwZT0iTVNQYWdlIj4KICAgICAgICA8cGF0aCBkPSJNMTcxLjUwNzgxMywzLjI1MDAwMDM4IEMyMjYuMjA4MTgzLDEyLjg1NzcxMTEgMjk3LjExMjcyMiw3MS40OTEyODIzIDI1MC44OTU1OTksMTA4LjQxMDE1NSBDMjE2LjU4MjAyNCwxMzUuODIwMzEgMTg2LjUyODQwNSw5Ny4wNjI0OTY0IDE1Ni44MDA3NzQsODUuNzczNDM0NiBDMTI3LjA3MzE0Myw3NC40ODQzNzIxIDc2Ljg4ODQ2MzIsODQuMjE2MTQ2MiA2MC4xMjg5MDY1LDEwOC40MTAxNTMgQy0xNS45ODA0Njg1LDIxOC4yODEyNDcgMTQ1LjI3NzM0NCwyOTYuNjY3OTY4IDE0NS4yNzczNDQsMjk2LjY2Nzk2OCBDMTQ1LjI3NzM0NCwyOTYuNjY3OTY4IC0yNS40NDkyMTg3LDI1Ny4yNDIxOTggMy4zOTg0Mzc1LDEwOC40MTAxNTUgQzE2LjMwNzA2NjEsNDEuODExNDE3NCA4NC43Mjc1ODI5LC0xMS45OTIyOTg1IDE3MS41MDc4MTMsMy4yNTAwMDAzOCBaIiBpZD0iUGF0aC0xIiBmaWxsPSIjZmZmZmZmIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg==);
-}
-
 #waitingTextContainer {
     position: fixed;
     top: 50%;
 }
 
-@keyframes rotateBefore {
-    from {
-      transform: rotateX(60deg) rotateY(45deg) rotateZ(0deg);
-    }
-    to {
-      transform: rotateX(60deg) rotateY(45deg) rotateZ(-360deg);
-    }
-}
-
-@keyframes rotateAfter {
-    from {
-      transform: rotateX(240deg) rotateY(45deg) rotateZ(0deg);
-    }
-    to {
-      transform: rotateX(240deg) rotateY(45deg) rotateZ(360deg);
-    }
-}
 
 /*******************************************************************************
  *                                                                             *
@@ -996,51 +1110,120 @@ body, button {
 }
 
 #loginOptionsContent {
-    border-radius: 3px;
     position: relative;
-    top: -5%;
+    top: -4%;
 }
 
 .loginOptionsMainContent {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+}
+
+/* More room above the heading than below it, so the pair reads as one unit. */
+.loginOptionsHeader {
+    margin-bottom: var(--space-7);
+    text-align: center;
+}
+
+.loginOptionsHeader h2 {
+    margin: 0;
+    font-size: 2.1rem;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.75);
+}
+
+.loginOptionsSubtitle {
+    margin: var(--space-2) 0 0;
+    font-size: 0.95rem;
+    color: var(--text-2);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
 }
 
 .loginOptionActions {
     display: flex;
     flex-direction: column;
-    row-gap: 10px;
+    row-gap: var(--space-3);
 }
 
 .loginOptionButtonContainer {
-    width: 16em;
+    width: min(23em, 78vw);
 }
 
 .loginOptionButton {
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(126, 126, 126, 0.57);
-    border-radius: 3px;
-    height: 50px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    min-height: 64px;
     width: 100%;
     text-align: left;
-    padding: 0px 25px;
+    padding: var(--space-4) var(--space-5);
     cursor: pointer;
     outline: none;
-    transition: 0.25s ease;
     display: flex;
     align-items: center;
-    column-gap: 5px;
+    column-gap: var(--gap-icon-label);
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-1);
+    transition:
+        border-color var(--dur) var(--ease-out),
+        box-shadow var(--dur) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
 }
+
 .loginOptionButton:hover,
-.loginOptionButton:focus {
-    background: rgba(54, 54, 54, 0.25);
-    text-shadow: 0px 0px 20px white;
+.loginOptionButton:focus-visible {
+    background: var(--night-3);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-2);
+}
+
+.loginOptionButton:active {
+    transform: translateY(1px);
+}
+
+.loginOptionButton:disabled {
+    opacity: 0.45;
+    cursor: default;
+    box-shadow: none;
+}
+
+/* Icon and chevron are optically lighter than the label they frame. */
+.loginOptionIcon {
+    flex: 0 0 auto;
+    color: var(--text-2);
+    transition: color var(--dur) var(--ease-out);
+}
+
+.loginOptionLabel {
+    flex: 1 1 auto;
+}
+
+.loginOptionChevron {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    color: var(--text-3);
+    transition:
+        transform var(--dur) var(--ease-out),
+        color var(--dur) var(--ease-out);
+}
+
+.loginOptionButton:hover .loginOptionIcon,
+.loginOptionButton:focus-visible .loginOptionIcon {
+    color: var(--text-1);
+}
+
+.loginOptionButton:hover .loginOptionChevron,
+.loginOptionButton:focus-visible .loginOptionChevron {
+    color: var(--text-1);
+    transform: translateX(4px);
 }
 
 #loginOptionCancelContainer {
-    position: absolute;
-    bottom: -100px;
+    margin-top: var(--space-7);
+    text-align: center;
 }
 
 #loginOptionCancelButton {
@@ -2475,14 +2658,13 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer {
     height: 100%;
     position: relative;
-    transition: background 2s ease;
+    transition: background-color var(--dur) var(--ease-out);
     overflow-y: hidden;
 }
 
 /* Upper content container. */
 #landingContainer > #upper {
     position: relative;
-    transition: top 2s ease;
     top: 0px;
     height: 77%;
     display: flex;
@@ -2520,7 +2702,6 @@ input:checked + .toggleSwitchSlider:before {
 }
 #landingContainer > #lower > #left {
     position: relative;
-    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 33%;
@@ -2536,7 +2717,6 @@ input:checked + .toggleSwitchSlider:before {
 }
 #landingContainer > #lower > #center {
     position: relative;
-    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 34%;
@@ -2546,12 +2726,10 @@ input:checked + .toggleSwitchSlider:before {
 #landingContainer > #lower > #center #content {
     position: relative;
     z-index: 500;
-    transition: top 2s ease;
     top: 10px;
 }
 #landingContainer > #lower > #right {
     position: relative;
-    transition: top 2s ease;
     top: 0px;
     height: 100%;
     width: 33%;
@@ -2564,317 +2742,383 @@ input:checked + .toggleSwitchSlider:before {
  *                                                                             *
  ******************************************************************************/
 
-/* Main container. */
+/* Full-landing layer; GSAP drives its visibility and the panel's entrance. */
 #newsContainer {
     position: absolute;
-    top: 100%;
-    height: 100%;
-    width: 100%;
-    transition: top 2s ease;
+    inset: 0;
+    z-index: 400;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-}
-
-/* News content container. */
-#newsContent {
-    height: 82vh;
-    width: 100%;
-    display: flex;
-    -webkit-user-select: initial;
-    position: relative;
-}
-
-/* Drop shadow displayed when content is scrolled out of view. */
-#newsContent:before {
-    content: '';
-    background: linear-gradient(rgba(0, 0, 0, 0.25), transparent);
-    width: 100%;
-    height: 5px;
-    position: absolute;
+    box-sizing: border-box;
+    padding: calc(var(--space-8) + 40px) var(--space-6) var(--space-6);
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.25s ease;
-}
-#newsContent[scrolled]:before {
-    opacity: 1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 40%, rgba(11, 8, 32, 0.45), rgba(8, 5, 26, 0.80));
 }
 
-/* News article status container (left). */
-#newsStatusContainer {
-    width: calc(30% - 60px);
-    height: calc(100% - 30px);
-    padding: 15px 15px 15px 45px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+#newsContainer.is-open {
+    pointer-events: auto;
+}
+
+#landingContainer.news-open > #lower > #center {
+    position: absolute;
+    top: var(--space-4);
+    left: 50%;
+    width: auto;
+    height: auto;
+    z-index: 700;
+    transform: translateX(-50%);
+}
+
+#landingContainer.news-open #newsButtonSVG {
+    transform: rotate(180deg);
+}
+
+#newsPanel {
     position: relative;
-}
-
-/* News status content. */
-#newsStatusContent {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    width: min(880px, 100%);
+    height: min(100%, 640px);
+    overflow: hidden;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
-/* News title wrapper. */
-#newsTitleContainer {
-    display: flex;
-    max-width: 90%;
-}
-
-/* News article title styles. */
-#newsArticleTitle {
-    font-size: clamp(16px, min(1.8367vw, 3.2609vh), 23px);
-    font-weight: bold;
-    font-family: 'Coolvetica', sans-serif;
-    color: white;
-    text-decoration: none;
-    transition: 0.25s ease;
-    outline: none;
-    text-align: right;
-}
-#newsArticleTitle:hover,
-#newsArticleTitle:focus {
-    text-shadow: 0px 0px 20px white;
-}
-#newsArticleTitle:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
-}
-
-/* News meta container. */
-#newsMetaContainer {
+#newsContent {
     display: flex;
     flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    -webkit-user-select: text;
+    user-select: text;
 }
 
-/* Date and author wrappers. */
-#newsArticleDateWrapper,
-#newsArticleAuthorWrapper {
+#newsHeader {
     display: flex;
-    justify-content: flex-end;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-5);
+    padding: var(--space-6) var(--space-6) var(--space-5);
+    border-bottom: 1px solid var(--line-soft);
+    transition: box-shadow var(--dur) var(--ease-out);
 }
 
-/* Date and author shared styles. */
-#newsArticleDate,
-#newsArticleAuthor {
-    display: inline-block;
-    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
-    padding: 0px 5px;
-    font-weight: bold;
-    border-radius: 2px;
+#newsContent[scrolled] #newsHeader {
+    box-shadow: 0 10px 18px -14px rgba(0, 0, 0, 0.9);
 }
 
-/* Date styles. */
+#newsHeading {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+#newsKicker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent-hi);
+}
+
+#newsKickerIcon {
+    width: 20px;
+    height: 20px;
+    image-rendering: pixelated;
+}
+
+.newsKickerSep {
+    width: 4px;
+    height: 4px;
+    background: var(--text-3);
+}
+
 #newsArticleDate {
-    background: white;
-    color: black;
-    margin-top: 5px;
+    font-family: inherit;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
 }
 
-/* Author styles. */
-#newsArticleAuthor {
-    background: #a02d2a;
+#newsTitleContainer {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(20px, min(2.4vw, 4.2vh), 30px);
+    font-weight: 700;
+    line-height: 1.15;
 }
 
-/* News article comments styles. */
-#newsArticleComments {
-    margin-top: 5px;
-    display: inline-block;
-    font-size: clamp(10px, min(1.0204vw, 1.8116vh), 13px);
-    color: #ffffff;
+#newsArticleTitle {
+    color: var(--text-1);
     text-decoration: none;
-    transition: 0.25s ease;
     outline: none;
-    text-align: right;
-}
-#newsArticleComments:focus,
-#newsArticleComments:hover {
-    color: #e0e0e0;
-}
-#newsArticleComments:active {
-    color: #c7c7c7;
+    transition: color var(--dur-fast) var(--ease-out);
 }
 
-/* Article content container (right). */
-#newsArticleContainer {
-    width: calc(100% - 25px);
-    height: 100%;
-    margin: 0px 0px 0px 25px;
+#newsArticleTitle[href^="http"]:hover,
+#newsArticleTitle[href^="http"]:focus-visible {
+    color: var(--accent-hi);
 }
 
-/* Article content styles. */
-#newsArticleContentScrollable {
-    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
-    overflow-y: scroll;
-    height: 100%;
-    padding: 0px 15px 0px 15px;
+#newsArticleAuthor {
+    font-size: 13px;
+    color: var(--text-3);
 }
-#newsArticleContentScrollable img,
-#newsArticleContentScrollable iframe {
-    max-width: 95%;
-    display: block;
-    margin: 0 auto;
-}
-#newsArticleContentScrollable a {
-    color: rgba(202, 202, 202, 0.75);
-    transition: 0.25s ease;
-    outline: none;
-}
-#newsArticleContentScrollable a:hover,
-#newsArticleContentScrollable a:focus {
-    color: rgba(255, 255, 255, 0.75);
-}
-#newsArticleContentScrollable a:active {
-    color: rgba(165, 165, 165, 0.75);
-}
-#newsArticleContentScrollable::-webkit-scrollbar {
-    width: 2px;
-}
-#newsArticleContentScrollable::-webkit-scrollbar-track {
+
+#newsArticleAuthor:empty {
     display: none;
 }
-#newsArticleContentScrollable::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.50);
-}
-.bbCodeSpoilerButton {
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: clamp(14px, min(1.6327vw, 2.8986vh), 21px);
-    transition: 0.25s ease;
-    width: 100%;
-    border-bottom: 1px solid white;
-    padding-bottom: 15px;
-}
-.bbCodeSpoilerButton:hover,
-.bbCodeSpoilerButton:focus {
-    text-shadow: 0px 0px 20px #ffffff, 0px 0px 20px #ffffff, 0px 0px 20px #ffffff;
-}
-.bbCodeSpoilerButton:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7, 0px 0px 20px #c7c7c7;
-}
-.bbCodeSpoilerText {
-    display: none;
-    padding: 15px 0px;
-    border-bottom: 1px solid white;
-}
 
-
-#newsArticleContentWrapper {
-    width: 80%;
-}
-
-.newsArticleSpacerTop {
-    height: 15px;
-}
-
-/* Div to add spacing at the end of a news article. */
-.newsArticleSpacerBot {
-    height: 30px;
-}
-
-/* News navigation container. */
 #newsNavigationContainer {
     display: flex;
-    justify-content: center;
+    flex: none;
     align-items: center;
-    margin-bottom: 10px;
+    gap: var(--space-2);
     -webkit-user-select: none;
-    position: absolute;
-    bottom: 15px;
-    right: 0px;
+    user-select: none;
 }
 
-/* Navigation status span. */
+#newsNavigationContainer[hidden] {
+    display: none;
+}
+
 #newsNavigationStatus {
-    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
-    margin: 0px 15px;
+    min-width: 7ch;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text-2);
 }
 
-/* Left and right navigation button styles. */
 #newsNavigateLeft,
 #newsNavigateRight {
-    background: none;
-    border: none;
-    outline: none;
-    height: 20px;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: var(--text-1);
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
     cursor: pointer;
-}
-#newsNavigateLeft:hover #newsNavigationLeftSVG,
-#newsNavigateLeft:focus #newsNavigationLeftSVG,
-#newsNavigateRight:hover #newsNavigationRightSVG,
-#newsNavigateRight:focus #newsNavigationRightSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #fff);
-}
-#newsNavigateLeft:active #newsNavigationLeftSVG .arrowLine,
-#newsNavigateRight:active #newsNavigationRightSVG .arrowLine {
-    stroke: #c7c7c7;
-}
-#newsNavigateLeft:active #newsNavigationLeftSVG,
-#newsNavigateRight:active #newsNavigationRightSVG {
-    -webkit-filter: drop-shadow(0px 0px 2px #c7c7c7);
-}
-#newsNavigateLeft:disabled #newsNavigationLeftSVG .arrowLine,
-#newsNavigateRight:disabled #newsNavigationRightSVG .arrowLine {
-    stroke: rgba(255, 255, 255, 0.75);
-}
-#newsNavigationLeftSVG {
-    transform: rotate(-90deg);
-    width: 15px;
-}
-#newsNavigationRightSVG {
-    transform: rotate(90deg);
-    width: 15px;
+    transition:
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
 }
 
-/* News error (message) container. */
-#newsErrorContainer {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+#newsNavigateLeft svg,
+#newsNavigateRight svg {
+    width: 18px;
+    height: 18px;
 }
+
+#newsNavigateLeft:hover,
+#newsNavigateRight:hover,
+#newsNavigateLeft:focus-visible,
+#newsNavigateRight:focus-visible {
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
+}
+
+#newsNavigateLeft:active,
+#newsNavigateRight:active {
+    transform: translateY(1px);
+}
+
+#newsArticleContainer {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+}
+
+#newsArticleContentScrollable {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-6) var(--space-6);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-2);
+}
+
+#newsArticleContentWrapper {
+    max-width: 68ch;
+}
+
+#newsArticleContentWrapper > :first-child {
+    margin-top: 0;
+}
+
+#newsArticleContentWrapper h1,
+#newsArticleContentWrapper h2,
+#newsArticleContentWrapper h3,
+#newsArticleContentWrapper h4,
+#newsArticleContentWrapper strong {
+    color: var(--text-1);
+}
+
+#newsArticleContentWrapper h1,
+#newsArticleContentWrapper h2,
+#newsArticleContentWrapper h3 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+    margin: 1.4em 0 0.5em;
+}
+
+#newsArticleContentWrapper p,
+#newsArticleContentWrapper ul,
+#newsArticleContentWrapper ol {
+    margin: 0 0 1em;
+}
+
+#newsArticleContentWrapper li + li {
+    margin-top: 0.3em;
+}
+
+#newsArticleContentWrapper hr {
+    border: none;
+    border-top: 1px solid var(--line-soft);
+    margin: 1.5em 0;
+}
+
+#newsArticleContentWrapper code {
+    padding: 0.1em 0.35em;
+    background: var(--night-1);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+}
+
+#newsArticleContentScrollable img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: var(--space-4) 0;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line-soft);
+}
+
+#newsArticleContentScrollable a {
+    color: var(--accent-hi);
+    text-underline-offset: 3px;
+    outline: none;
+}
+
+#newsArticleContentScrollable a:hover,
+#newsArticleContentScrollable a:focus-visible {
+    color: var(--text-1);
+}
+
+.bbCodeSpoilerButton {
+    width: 100%;
+    padding: var(--space-3) 0;
+    color: var(--text-1);
+    font-size: 15px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--line-soft);
+    cursor: pointer;
+}
+
+.bbCodeSpoilerButton:hover,
+.bbCodeSpoilerButton:focus-visible {
+    color: var(--accent-hi);
+}
+
+.bbCodeSpoilerText {
+    display: none;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--line-soft);
+}
+
+#newsFooter {
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--space-3) var(--space-6);
+    border-top: 1px solid var(--line-soft);
+}
+
+#newsFooter[hidden] {
+    display: none;
+}
+
+#newsArticleLink {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 13px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-out);
+}
+
+#newsArticleLink svg {
+    width: 16px;
+    height: 16px;
+}
+
+#newsArticleLink:hover,
+#newsArticleLink:focus-visible {
+    color: var(--accent-hi);
+}
+
+/* Loading, empty and failed states share the panel. */
+#newsErrorContainer {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    text-align: center;
+}
+
 #newsErrorFailed {
     display: flex;
-    align-items: center;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
 }
 
-/* News error content (message). */
 .newsErrorContent {
-    font-size: clamp(18px, min(2.0408vw, 3.6232vh), 26px);
+    font-size: 16px;
+    color: var(--text-2);
 }
+
 #newsErrorLoading {
     display: flex;
-    width: 168.92px;
+    align-items: center;
+    gap: var(--space-3);
 }
-#nELoadSpan {
-    white-space: pre;
-}
-/* News error retry button styles. */
+
 #newsErrorRetry {
-    font-size: clamp(11px, min(1.2245vw, 2.1739vh), 16px);
-    font-weight: bold;
+    padding: var(--space-2) var(--space-5);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+    background: var(--surface-1);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    background: none;
-    border: none;
-    outline: none;
-    transition: 0.25s ease;
+    transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
-#newsErrorRetry:focus,
-#newsErrorRetry:hover {
-    text-shadow: 0px 0px 20px white;
-}
-#newsErrorRetry:active {
-    color: #c7c7c7;
-    text-shadow: 0px 0px 20px #c7c7c7;
+
+#newsErrorRetry:hover,
+#newsErrorRetry:focus-visible {
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
 }
 
 /*******************************************************************************
@@ -2924,12 +3168,11 @@ input:checked + .toggleSwitchSlider:before {
     top: 0%;
     left: 0%;
     border-radius: 8px;
-    box-shadow: 0 0 15px #43c628;
-    animation: glow-grow 4s ease-out infinite;
+    box-shadow: 0 3px 14px rgba(67, 198, 40, 0.45);
     background: rgba(0, 0, 0, 0.15);
 }
 #image_seal_container[update]:before {
-    animation-delay: 2s;
+    display: none;
 }
 
 /* Update available tooltip styles. */
@@ -3979,39 +4222,22 @@ input:checked + .toggleSwitchSlider:before {
     align-items: center;
     justify-content: center;
     width: min(420px, 75vw);
+    row-gap: var(--space-6);
+}
+
+/* Status caption. Named so the launcher reads as working rather than stuck. */
+#startupLoadingStatus {
+    margin: 0;
+    min-height: 1.2em;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 
-#startupLoadingTrack {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 524.13 / 151.14;
-}
-
-#startupLoadingBase,
-#startupLoadingFill {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-#startupLoadingBase {
-    filter: brightness(0);
-}
-
-#startupLoadingFill {
-    filter: brightness(0) invert(1);
-    clip-path: inset(0 calc(100% - var(--startup-progress)) 0 0);
-    transition: clip-path 0.4s ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    #startupLoadingFill {
-        transition: none;
-    }
-}
 
 /* Allow scaled text to wrap without fixed boxes clipping it. */
 #welcomeHeader, #welcomeDescription, #welcomeDescCTA,
@@ -4085,11 +4311,6 @@ svg.tabler-icon path {
 .frameButton svg.tabler-icon {
     width: 14px;
     height: 14px;
-}
-#newsNavigationLeftSVG, #newsNavigationRightSVG {
-    transform: none;
-    width: 1.5em;
-    height: 1.5em;
 }
 .loginSVG.tabler-icon {
     width: 26px;
@@ -4267,19 +4488,2187 @@ svg.tabler-icon path {
     }
 }
 
-#launcherBackgroundVideo {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    z-index: 0;
-    pointer-events: none;
-}
 #landingContainer > #lower .launchPanel {
     border: 2px solid #ffffff;
     border-radius: 12px;
     padding: clamp(12px, 1.5vw, 24px);
     box-sizing: border-box;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Landing View refinements                                                    *
+ *                                                                             *
+ * The landing view sits directly on the background video, so each cluster     *
+ * needs its own readable ground and the primary action needs to outrank        *
+ * everything else on the screen.                                              *
+ *                                                                             *
+ ******************************************************************************/
+
+/* Status cluster, bottom left. Grouped on one quiet surface so the labels stay
+   legible wherever the video happens to be bright. */
+#landingContainer > #lower > #left #content {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-5);
+    width: auto;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-1);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+}
+
+#landingContainer > #lower > #left .bot_wrapper {
+    width: auto;
+}
+
+#server_status_wrapper,
+#mojangStatusWrapper {
+    width: auto;
+    gap: var(--gap-icon-label);
+}
+
+#lower .bot_label {
+    color: var(--text-3);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+}
+
+#player_count {
+    color: var(--text-1);
+    text-shadow: none;
+    font-weight: 900;
+}
+
+/* The status indicator was a bullet glyph scaled up to icon size. It is drawn
+   here instead, and still takes its color from the script that sets it. */
+#mojang_status_icon {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+    font-size: 0;
+    line-height: 0;
+    flex: 0 0 auto;
+    box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+/* News control, bottom center. */
+#newsButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    position: relative;
+    transition: background-color var(--dur) var(--ease-out);
+}
+
+#newsButton:hover,
+#newsButton:focus-visible {
+    background: var(--surface-1);
+}
+
+#newsButtonText {
+    display: block;
+    line-height: 1.2;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+
+#newsButton:hover #newsButtonText,
+#newsButton:focus #newsButtonText {
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+
+#newsButtonSVG {
+    transition: transform var(--dur) var(--ease-out);
+}
+
+#newsButton:hover #newsButtonSVG,
+#newsButton:focus-visible #newsButtonSVG {
+    transform: translateY(-3px);
+    -webkit-filter: none;
+}
+
+/* Unread marker. Anchored to the control instead of floating beside it. */
+#newsButtonAlert {
+    width: 7px;
+    height: 7px;
+    top: var(--space-2);
+    right: var(--space-2);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+/* Launch panel, bottom right. The 2px pure-white box is replaced by a surface
+   that belongs to the same family as the status cluster. */
+#landingContainer > #lower .launchPanel {
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+    box-shadow: var(--shadow-2);
+    padding: var(--space-4);
+}
+
+#landingContainer > #lower > #right #launch_content {
+    gap: var(--space-2);
+}
+
+/* Primary action with a direct state change. */
+#launch_button {
+    width: 100%;
+    justify-content: center;
+    gap: var(--gap-icon-label);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    color: var(--text-on-accent);
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    letter-spacing: 0.04em;
+    text-shadow: none;
+    transition:
+        background-color var(--dur-fast) ease-out,
+        transform var(--dur-fast) var(--ease-out);
+}
+
+#launch_button:hover,
+#launch_button:focus-visible {
+    color: var(--text-on-accent);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#launch_button:active {
+    color: var(--text-on-accent);
+    transform: translateY(1px);
+    text-shadow: none;
+}
+
+#launch_button:disabled {
+    color: rgba(255, 255, 255, 0.46);
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.launchIcon {
+    flex: 0 0 auto;
+    width: 0.78em;
+    height: 0.78em;
+}
+
+/* Server selector reads as the panel's secondary line, not a second button. */
+#server_selection_button {
+    color: var(--text-2);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition:
+        color var(--dur) var(--ease-out),
+        background-color var(--dur) var(--ease-out);
+    text-shadow: none;
+}
+
+#server_selection_button:hover,
+#server_selection_button:focus-visible {
+    color: var(--text-1);
+    background: rgba(255, 255, 255, 0.08);
+    text-shadow: none;
+}
+
+/* Account cluster, top right. */
+#user_text {
+    color: var(--text-2);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* Settings control. A bare 24px glyph is below the comfortable hit target. */
+.mediaButton {
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        transform var(--dur) var(--ease-out),
+        box-shadow var(--dur) var(--ease-out);
+}
+
+.mediaButton:hover,
+.mediaButton:focus-visible {
+    box-shadow: var(--shadow-1);
+}
+
+.mediaButton:active {
+    transform: scale(0.94);
+}
+
+#settingsSVG {
+    transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.mediaButton:hover #settingsSVG,
+.mediaButton:focus-visible #settingsSVG {
+    transform: rotate(60deg);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Settings View refinements                                                   *
+ *                                                                             *
+ * Settings is the densest surface in the launcher and it sat directly on the   *
+ * background video. It gets a real ground, a separated navigation rail, and    *
+ * states that are carried by position and fill rather than by text glow.       *
+ *                                                                             *
+ ******************************************************************************/
+
+#settingsContainer {
+    background-color: rgba(11, 8, 32, 0.94);
+    contain: paint;
+}
+
+/* Navigation rail, separated from the content it controls. */
+#settingsContainerLeft {
+    background: rgba(0, 0, 0, 0.30);
+    border-right: 1px solid var(--line-soft);
+    padding-top: var(--space-7);
+}
+
+#settingsNavHeader {
+    justify-content: flex-start;
+    padding-inline: var(--space-6);
+    height: auto;
+    margin-bottom: var(--space-7);
+}
+
+#settingsNavItemsContainer {
+    height: auto;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    padding-inline: var(--space-4);
+}
+
+#settingsNavItemsContent {
+    width: 100%;
+}
+
+.settingsNavItem {
+    position: relative;
+    margin: 2px 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
+    color: var(--text-3);
+    transition:
+        color var(--dur) var(--ease-out),
+        background-color var(--dur) var(--ease-out);
+}
+
+.settingsNavItem:hover,
+.settingsNavItem:focus-visible {
+    color: var(--text-1);
+    background: rgba(255, 255, 255, 0.07);
+    text-shadow: none;
+}
+
+/* The selected tab is marked by an accent rule on the rail, which survives
+   where a glow on white text does not. */
+.settingsNavItem[selected] {
+    color: var(--text-1);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.settingsNavItem[selected]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 1.1em;
+    border-radius: 999px;
+    background: var(--accent);
+}
+
+.settingsNavDivider {
+    width: calc(100% - var(--space-8));
+    background: var(--line-soft);
+    margin-inline: auto;
+    margin-block: var(--space-5);
+}
+
+#settingsNavContentBottom {
+    position: static;
+    padding: var(--space-4);
+}
+
+/* Done is the way out of settings, so it is the one filled control here. */
+#settingsNavDone {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    color: var(--text-on-accent);
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    transition:
+        border-color var(--dur) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+#settingsNavDone:hover,
+#settingsNavDone:focus-visible {
+    color: var(--text-on-accent);
+    border-color: var(--accent-hover);
+    background: var(--accent-hover);
+    text-shadow: none;
+}
+
+#settingsNavDone:active {
+    transform: translateY(1px);
+    text-shadow: none;
+    color: var(--text-on-accent);
+}
+
+/* Tab content. */
+#settingsContainerRight {
+    padding-inline: var(--space-7) var(--space-6);
+}
+
+.settingsTabHeader {
+    margin-bottom: var(--space-7);
+}
+
+.settingsTabHeaderDesc {
+    color: var(--text-2);
+    margin-top: var(--space-2);
+}
+
+/* Account provider rows. */
+.settingsAuthAccountTypeContainer {
+    width: min(100%, 46rem);
+}
+
+.settingsAuthAccountTypeHeader {
+    border-bottom: 1px solid var(--line-soft);
+    padding: var(--space-3) 0;
+    margin-bottom: var(--space-5);
+    gap: var(--space-4);
+}
+
+.settingsAuthAccountTypeHeaderLeft {
+    align-items: center;
+    column-gap: var(--gap-icon-label);
+}
+
+.settingsAuthAccountTypeHeaderLeft .tabler-icon {
+    flex: 0 0 auto;
+    color: var(--text-2);
+}
+
+.settingsAddAuthAccount {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition:
+        border-color var(--dur) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+.settingsAddAuthAccount:hover,
+.settingsAddAuthAccount:focus-visible {
+    border-color: var(--line-strong);
+    background: rgba(255, 255, 255, 0.1);
+    text-shadow: none;
+}
+
+.settingsAddAuthAccount:active {
+    transform: translateY(1px);
+    text-shadow: none;
+    color: var(--text-1);
+}
+
+.settingsAddAuthAccount:disabled {
+    opacity: 0.45;
+    color: var(--text-2);
+}
+
+/* The tab scrollbar opted out of the themed one above; it is restored here at
+   the width the dense panel needs. */
+.settingsTab::-webkit-scrollbar {
+    width: 10px;
+}
+
+.settingsTab::-webkit-scrollbar-track {
+    display: block;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.settingsTab::-webkit-scrollbar-thumb {
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Waiting View refinements                                                    *
+ *                                                                             *
+ * The spinner's halves and the caption were each pinned to the viewport, so    *
+ * they drifted apart from the content they belong to. They are given a real    *
+ * box here and allowed to flow.                                               *
+ *                                                                             *
+ ******************************************************************************/
+
+#waitingContent {
+    width: auto;
+    top: 0;
+    row-gap: var(--space-7);
+}
+
+#waitingTextContainer {
+    position: static;
+    text-align: center;
+}
+
+#waitingTextContainer h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    color: var(--text-1);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Overlay refinements                                                         *
+ *                                                                             *
+ * Dialogs floated as loose text on a scrim. They get a real panel, so an       *
+ * interruption reads as deliberate rather than as the UI falling apart.        *
+ *                                                                             *
+ ******************************************************************************/
+
+#overlayContainer {
+    background: rgba(8, 5, 26, 0.78);
+}
+
+#overlayContent {
+    width: min(420px, 85vw);
+    padding: var(--space-7) var(--space-6);
+    background: var(--surface-3);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+    row-gap: var(--space-4);
+}
+
+#overlayContent > * {
+    margin: 0;
+}
+
+#overlayTitle {
+    letter-spacing: -0.005em;
+    line-height: 1.2;
+}
+
+#overlayDesc {
+    font-weight: 400;
+    color: var(--text-2);
+    line-height: 1.5;
+}
+
+#overlayActionContainer {
+    width: 100%;
+    row-gap: var(--space-3);
+    margin-top: var(--space-2);
+}
+
+/* Dialog actions use a fast, direct hover state. */
+#overlayAcknowledge,
+#serverSelectConfirm,
+#accountSelectConfirm {
+    color: var(--text-on-accent);
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3) var(--space-5);
+    transition:
+        border-color var(--dur) var(--ease-out),
+        transform var(--dur-fast) var(--ease-out);
+}
+
+#overlayAcknowledge:hover,
+#overlayAcknowledge:focus-visible,
+#serverSelectConfirm:hover,
+#serverSelectConfirm:focus-visible,
+#accountSelectConfirm:hover,
+#accountSelectConfirm:focus-visible {
+    color: var(--text-on-accent);
+    background: var(--accent-hover);
+    box-shadow: none;
+    border-color: var(--accent-hover);
+}
+
+#overlayAcknowledge:active,
+#serverSelectConfirm:active,
+#accountSelectConfirm:active {
+    transform: translateY(1px);
+}
+
+#overlayDismiss {
+    color: var(--text-3);
+    padding: var(--space-2);
+}
+
+#overlayDismiss:hover,
+#overlayDismiss:focus-visible {
+    color: var(--text-1);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Inspection fixes                                                            *
+ *                                                                             *
+ ******************************************************************************/
+
+/* The frame bar sat at 50% black, which read as a bright strip above the near
+   opaque settings panel. It is chrome, so it anchors the top edge everywhere. */
+#frameBar {
+    background-color: rgba(11, 8, 32, 0.86);
+}
+
+/* Done is pinned to the foot of the rail. It used to be positioned absolutely
+   at 65%, so moving it into flow pushed it past the bottom of the view. */
+#settingsNavContentBottom {
+    margin-top: auto;
+}
+
+#settingsContainerLeft {
+    padding-bottom: var(--space-5);
+}
+
+#settingsNavItemsContainer {
+    min-height: 0;
+    overflow: visible;
+}
+
+/* The launch panel framed a button that carries its own border. One frame per
+   group: the panel keeps the ground, the button keeps the edge. */
+#landingContainer > #lower .launchPanel {
+    border-color: transparent;
+}
+
+/* Separate the two status groups more than the words inside each one. */
+#landingContainer > #lower > #left #content {
+    gap: var(--space-7);
+}
+
+/* The unread marker belongs to the label it modifies, not to the corner of an
+   invisible box. */
+#newsButton {
+    isolation: isolate;
+}
+
+#newsButtonAlert {
+    position: static;
+    display: inline-block;
+    margin-left: var(--space-2);
+    flex: 0 0 auto;
+}
+
+#newsButtonText {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* The settings control was a bare glyph with no resting affordance. */
+.mediaButton {
+    border: 1px solid var(--line-soft);
+    background: var(--surface-2);
+}
+
+.mediaButton:hover,
+.mediaButton:focus-visible {
+    border-color: var(--line);
+}
+
+/* Player identity: a compact 3D head keeps the signed-in skin recognizable
+   without turning the account control into a full character showcase. */
+#avatarStage {
+    --avatar-tilt-x: 0deg;
+    --avatar-tilt-y: 0deg;
+    order: -1;
+    position: relative;
+    isolation: isolate;
+    width: clamp(100px, min(8vw, 17vh), 164px);
+    aspect-ratio: 1;
+    perspective: 520px;
+    cursor: pointer;
+}
+
+#avatarStage::before {
+    content: '';
+    position: absolute;
+    inset: 2% 2% 10%;
+    z-index: -1;
+    opacity: 0.72;
+    background:
+        linear-gradient(var(--text-1), var(--text-1)) left top / 22px 1px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) left top / 1px 22px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) right top / 22px 1px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) right top / 1px 22px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) left bottom / 22px 1px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) left bottom / 1px 22px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) right bottom / 22px 1px no-repeat,
+        linear-gradient(var(--text-1), var(--text-1)) right bottom / 1px 22px no-repeat,
+        radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.16), transparent 64%);
+    transition: opacity var(--dur) var(--ease-out);
+}
+
+#avatarContainer {
+    position: absolute;
+    inset: 4% 10% 15%;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    box-shadow: none;
+    filter: drop-shadow(0 11px 11px rgba(0, 0, 0, 0.7));
+    image-rendering: pixelated;
+    pointer-events: none;
+    transform: scaleX(-1) rotateX(var(--avatar-tilt-x)) rotateY(var(--avatar-tilt-y)) translateY(-1px);
+    transform-origin: center;
+    transform-style: preserve-3d;
+    transition: transform var(--dur) var(--ease-out), filter var(--dur) var(--ease-out);
+    will-change: transform;
+}
+
+#avatarStage.avatarStage--empty #avatarContainer::before {
+    content: '?';
+    position: absolute;
+    inset: 10%;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    color: var(--text-2);
+    font-size: clamp(30px, 4vw, 64px);
+    font-weight: 900;
+    background: var(--surface-1);
+}
+
+#avatarOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    opacity: 1;
+    border: 0;
+    border-radius: 0;
+    color: var(--text-on-accent);
+    background: transparent;
+    cursor: pointer;
+}
+
+#avatarStage:hover::before,
+#avatarStage:focus-within::before {
+    opacity: 1;
+}
+
+#avatarStage:hover #avatarContainer,
+#avatarStage:focus-within #avatarContainer {
+    filter: drop-shadow(0 14px 13px rgba(0, 0, 0, 0.76));
+}
+
+#avatarOverlay:hover,
+#avatarOverlay:focus,
+#avatarOverlay:focus-visible {
+    opacity: 1;
+    background: transparent;
+    outline: none;
+}
+
+#avatarOverlay:focus-visible {
+    outline: 2px solid var(--text-1);
+    outline-offset: 4px;
+}
+
+#avatarOverlay:active {
+    background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #avatarContainer,
+    #avatarStage::before {
+        transition: none;
+    }
+}
+
+/* The navigation rail did not fit the launcher's default window height; the
+   original layout hid that by positioning the footer absolutely over the list.
+   The footer is now a sibling of the list, so the list may scroll on its own
+   while the way out of settings stays pinned and reachable. */
+#settingsContainerLeft {
+    padding-top: var(--space-5);
+    display: flex;
+}
+
+#settingsNavContainer {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+}
+
+#settingsNavHeader {
+    flex: 0 0 auto;
+    margin-bottom: var(--space-5);
+}
+
+#settingsNavItemsContainer {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#settingsNavItemsContent {
+    height: auto;
+}
+
+#settingsNavContentBottom {
+    flex: 0 0 auto;
+    margin-top: 0;
+}
+
+.settingsNavItem {
+    padding: var(--space-2) var(--space-4);
+}
+
+.settingsNavSpacer {
+    height: var(--space-4);
+}
+
+.settingsNavDivider {
+    margin-block: var(--space-3);
+}
+
+/* Widening the gap between the two status groups pushed the cluster past its
+   grid column and wrapped each label onto its value. The labels stay on one
+   line and the separation drops back to a value the column can hold. */
+#landingContainer > #lower > #left #content {
+    gap: var(--space-5);
+    flex-wrap: nowrap;
+}
+
+#landingContainer > #lower > #left #content .bot_label,
+#landingContainer > #lower > #left #content #player_count {
+    white-space: nowrap;
+}
+
+#server_status_wrapper,
+#mojangStatusWrapper {
+    flex-wrap: nowrap;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * GordosGang theme                                                            *
+ *                                                                             *
+ * The background art already carries the logo, top center. Nothing on the     *
+ * landing view is allowed to sit over it: the account moves into the play      *
+ * panel, settings shrinks into the corner, and every cluster lives in the      *
+ * bottom band over the lake, where the scene is darkest.                       *
+ *                                                                             *
+ ******************************************************************************/
+
+/* ---------------------------------------------------------------------------
+ * Pixel loader. Three blocks in the scene's palette (logo violet, logo
+ * magenta, lantern amber) hopping in turn. One component for every wait.
+ * ------------------------------------------------------------------------- */
+
+.ggLoader {
+    --gg-cell: 7px;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: calc(var(--gg-cell) * 0.5);
+    height: calc(var(--gg-cell) * 2.4);
+    flex: 0 0 auto;
+}
+
+.ggLoader i {
+    display: block;
+    width: var(--gg-cell);
+    height: var(--gg-cell);
+    background: var(--accent-hi);
+    box-shadow: 0 calc(var(--gg-cell) / 3) 0 var(--accent-deep);
+    animation: ggHop 960ms var(--ease-in-out) infinite;
+}
+
+.ggLoader i:nth-child(2) {
+    background: #ec8cff;
+    animation-delay: 160ms;
+}
+
+.ggLoader i:nth-child(3) {
+    background: var(--lantern);
+    box-shadow: 0 calc(var(--gg-cell) / 3) 0 #8a4a12;
+    animation-delay: 320ms;
+}
+
+.ggLoader--lg {
+    --gg-cell: 14px;
+}
+
+@keyframes ggHop {
+    0%, 55%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    25% {
+        transform: translateY(calc(var(--gg-cell) * -1.2));
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ggLoader i {
+        animation: none;
+        opacity: 1;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ * Startup screen. The painted logo is the brand moment, so the loader sits
+ * underneath it as a segmented block bar and a one-line status.
+ * ------------------------------------------------------------------------- */
+
+#loadingContainer {
+    align-items: flex-end;
+    padding-bottom: clamp(56px, 17vh, 180px);
+    box-sizing: border-box;
+}
+
+#loadingContent {
+    width: min(300px, 70vw);
+    row-gap: var(--space-4);
+}
+
+#startupLoadingTrack {
+    position: relative;
+    width: 100%;
+    height: 18px;
+    padding: 3px;
+    box-sizing: border-box;
+    background: rgba(11, 8, 32, 0.78);
+    border: 2px solid var(--line);
+    border-radius: 2px;
+    box-shadow: var(--shadow-2);
+}
+
+#startupLoadingFill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #ec8cff);
+    -webkit-mask: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 13px);
+    clip-path: inset(0 calc(100% - var(--startup-progress)) 0 0);
+}
+
+#startupLoadingCaption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+#startupLoadingStatus {
+    color: var(--text-2);
+    text-shadow: 0 1px 4px rgba(5, 2, 20, 0.95);
+}
+
+/* ---------------------------------------------------------------------------
+ * Chrome and full-view grounds. Views that take over the window blur the
+ * scene behind them so the painted logo never fights a form or a dialog.
+ * ------------------------------------------------------------------------- */
+
+#loginContainer,
+#loginOptionsContainer,
+#waitingContainer,
+#welcomeContainer {
+    background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(20, 13, 56, 0.55), rgba(8, 5, 24, 0.88));
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+#settingsContainer {
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+#settingsContainerLeft {
+    background: rgba(8, 5, 24, 0.45);
+}
+
+#overlayContainer {
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+#overlayContent {
+    border-color: var(--line);
+}
+
+/* View titles take the pixel voice. */
+.loginOptionsHeader h2,
+#settingsNavHeaderText,
+.settingsTabHeaderText,
+#overlayTitle,
+#waitingTextContainer h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+/* Wordmark placements. */
+#loginImageSeal,
+#welcomeImageSeal {
+    width: clamp(220px, 26vw, 340px);
+    height: auto;
+    margin-bottom: var(--space-5);
+    filter: drop-shadow(0 10px 24px rgba(5, 2, 20, 0.65));
+}
+
+#settingsAboutLogo {
+    width: 88px;
+    padding: var(--space-2) 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * Landing, top band: only the update badge (left) and settings (right).
+ * ------------------------------------------------------------------------- */
+
+#landingContainer {
+    --landing-footer-height: clamp(168px, 28vh, 280px);
+}
+
+#landingContainer > #lower {
+    background: none;
+    align-items: end;
+    padding-bottom: clamp(16px, 3.5vh, 36px);
+}
+
+#image_seal_container {
+    display: none;
+    width: auto;
+    aspect-ratio: auto;
+    margin-top: clamp(16px, 3vh, 32px);
+}
+
+#image_seal_container[update] {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid rgba(255, 182, 92, 0.45);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    transition: border-color var(--dur) var(--ease-out), background-color var(--dur) var(--ease-out);
+}
+
+#image_seal_container[update]:hover,
+#image_seal_container[update]:focus-visible {
+    border-color: var(--lantern);
+    background: var(--surface-3);
+}
+
+#image_seal_container[update]::before,
+#image_seal_container[update]::after {
+    display: none;
+}
+
+#updateAvailableTooltip,
+#image_seal_container[update]:hover #updateAvailableTooltip {
+    position: static;
+    visibility: visible;
+    opacity: 1;
+    width: auto;
+    min-height: 0;
+    max-width: none;
+    padding: 0;
+    background: none;
+    transform: none;
+    color: var(--lantern);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+#updateAvailableTooltip::after {
+    display: none;
+}
+
+.updateBadgeDot {
+    width: 8px;
+    height: 8px;
+    background: var(--lantern);
+    box-shadow: 0 2px 0 #8a4a12;
+}
+
+#landingContainer > #upper > #right {
+    flex-basis: auto;
+    padding-inline: clamp(16px, 2vw, 32px);
+}
+
+#rightContainer {
+    top: clamp(16px, 3vh, 32px);
+    height: auto;
+    align-items: flex-end;
+}
+
+#mediaContent {
+    margin-top: 0;
+}
+
+#settingsMediaButton {
+    width: clamp(40px, 3.4vw, 52px);
+    height: clamp(40px, 3.4vw, 52px);
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    border-color: var(--line);
+    box-shadow: var(--shadow-1);
+}
+
+#settingsMediaButton:hover,
+#settingsMediaButton:focus-visible {
+    background: var(--surface-3);
+    border-color: var(--line-strong);
+}
+
+#settingsSVG,
+.mediaButton:hover #settingsSVG,
+.mediaButton:focus #settingsSVG,
+.mediaButton:active #settingsSVG {
+    width: clamp(20px, 1.8vw, 26px);
+    height: clamp(20px, 1.8vw, 26px);
+    stroke: var(--text-1);
+}
+
+#settingsTooltip {
+    background: var(--surface-3);
+}
+
+#settingsTooltip::after {
+    border-color: transparent transparent transparent var(--surface-3);
+}
+
+/* ---------------------------------------------------------------------------
+ * Landing, bottom band: status (left), news (center), play panel (right).
+ * ------------------------------------------------------------------------- */
+
+#landingContainer > #lower > #left {
+    justify-content: flex-start;
+}
+
+#landingContainer > #lower > #right {
+    justify-content: flex-end;
+}
+
+#landingContainer > #lower > #left #content {
+    background: var(--surface-1);
+    border-color: var(--line-soft);
+    box-shadow: var(--shadow-1);
+}
+
+#lower .bot_label {
+    color: var(--text-3);
+}
+
+#newsButton:hover,
+#newsButton:focus-visible {
+    background: var(--surface-1);
+}
+
+#newsButtonAlert {
+    background: var(--lantern);
+    box-shadow: 0 2px 0 #8a4a12;
+    border-radius: 0;
+}
+
+/* The play panel: player on the left, the action on the right. The account
+   wrapper dissolves so the avatar and name can sit in the panel's own grid. */
+#landingContainer > #lower .launchPanel {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+        "avatar name"
+        "avatar action";
+    align-items: center;
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+    width: min(100%, 420px);
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-3);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+}
+
+#user_content {
+    display: contents;
+}
+
+#avatarStage {
+    grid-area: avatar;
+    order: 0;
+    width: clamp(68px, 6.4vw, 104px);
+}
+
+#avatarStage::before {
+    background:
+        linear-gradient(var(--accent-hi), var(--accent-hi)) left top / 14px 2px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) left top / 2px 14px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) right top / 14px 2px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) right top / 2px 14px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) left bottom / 14px 2px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) left bottom / 2px 14px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) right bottom / 14px 2px no-repeat,
+        linear-gradient(var(--accent-hi), var(--accent-hi)) right bottom / 2px 14px no-repeat,
+        radial-gradient(circle at 50% 48%, rgba(207, 139, 255, 0.22), transparent 66%);
+}
+
+#avatarOverlay:focus-visible {
+    outline-color: var(--accent-hi);
+}
+
+#user_text {
+    grid-area: name;
+    width: auto;
+    text-align: left;
+    color: var(--text-1);
+    font-size: clamp(14px, min(1.3vw, 2.4vh), 20px);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-shadow: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#landingContainer > #lower > #right #launch_content,
+#launch_details {
+    grid-area: action;
+    min-width: 0;
+}
+
+#landingContainer > #lower > #right #launch_content {
+    align-items: stretch;
+    gap: var(--space-2);
+}
+
+/* Play is an extruded block, the same depth as the painted letters. */
+#launch_button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, min(2.4vw, 4.6vh), 40px);
+    letter-spacing: 0.08em;
+    padding: var(--space-2) var(--space-5);
+    color: var(--text-on-accent);
+    background: linear-gradient(to bottom, var(--accent-hover), var(--accent));
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: var(--radius-md);
+    box-shadow: var(--extrude), var(--shadow-2);
+    text-shadow: 0 2px 0 var(--accent-deep);
+    transition:
+        transform var(--dur-fast) var(--ease-out),
+        box-shadow var(--dur-fast) var(--ease-out),
+        filter var(--dur) var(--ease-out);
+}
+
+#launch_button:hover,
+#launch_button:focus-visible {
+    color: var(--text-on-accent);
+    background: linear-gradient(to bottom, #b95cff, var(--accent-hover));
+    border-color: rgba(255, 255, 255, 0.34);
+    box-shadow: var(--extrude), var(--shadow-2);
+    text-shadow: 0 2px 0 var(--accent-deep);
+}
+
+#launch_button:active {
+    color: var(--text-on-accent);
+    transform: translateY(3px);
+    box-shadow: var(--extrude-pressed), var(--shadow-1);
+    text-shadow: 0 2px 0 var(--accent-deep);
+}
+
+#launch_button:disabled {
+    color: var(--text-3);
+    background: var(--night-2);
+    border-color: var(--line-soft);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+#server_selection_button {
+    color: var(--text-3);
+    font-size: clamp(12px, min(1vw, 2vh), 15px);
+}
+
+#server_selection_button:hover,
+#server_selection_button:focus-visible {
+    color: var(--text-1);
+    background: rgba(196, 160, 255, 0.10);
+}
+
+/* Launch progress: the same segmented block bar as startup. */
+#launch_details {
+    align-items: center;
+    gap: var(--space-3);
+}
+
+#launch_progress_label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--accent-hi);
+    font-size: clamp(20px, 2.2vw, 36px);
+    text-shadow: none;
+}
+
+#launch_details_right {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    gap: var(--space-2);
+}
+
+#launch_progress[value] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 12px;
+}
+
+#launch_progress[value]::-webkit-progress-bar {
+    background: rgba(196, 160, 255, 0.14);
+    border-radius: 2px;
+}
+
+#launch_progress[value]::-webkit-progress-value {
+    background: linear-gradient(90deg, var(--accent), #ec8cff);
+    -webkit-mask: repeating-linear-gradient(90deg, #000 0 8px, transparent 8px 10px);
+}
+
+#launch_details_text {
+    color: var(--text-2);
+}
+
+/* ---------------------------------------------------------------------------
+ * Waits outside the startup screen.
+ * ------------------------------------------------------------------------- */
+
+#waitingContent {
+    row-gap: var(--space-6);
+}
+
+#waitingTextContainer h2 {
+    font-size: 1.4rem;
+}
+
+.circle-loader {
+    border-color: rgba(207, 139, 255, 0.28);
+    border-left-color: var(--accent-hi);
+}
+
+.load-complete {
+    border-color: var(--status-ok);
+}
+
+.checkmark:after {
+    border-color: var(--status-ok);
+}
+
+/* ---------------------------------------------------------------------------
+ * Settings controls in the theme's color.
+ * ------------------------------------------------------------------------- */
+
+.settingsNavItem:hover,
+.settingsNavItem:focus-visible,
+.settingsNavItem[selected] {
+    background: rgba(196, 160, 255, 0.10);
+}
+
+.settingsNavItem[selected]::before {
+    background: var(--accent-hi);
+}
+
+.settingsAddAuthAccount:hover,
+.settingsAddAuthAccount:focus-visible {
+    background: rgba(196, 160, 255, 0.12);
+}
+
+.toggleSwitchSlider {
+    background-color: rgba(196, 160, 255, 0.18);
+    border-color: var(--line);
+}
+
+input:checked + .toggleSwitchSlider {
+    background-color: var(--accent);
+    border-color: var(--accent-hi);
+}
+
+.rangeSlider {
+    background: rgba(196, 160, 255, 0.22);
+}
+
+.rangeSliderBar {
+    background: var(--accent-hi);
+}
+
+.rangeSliderTrack {
+    background: var(--text-1);
+    box-shadow: 0 2px 0 var(--accent-deep);
+}
+
+.serverListing,
+.accountListing {
+    border-color: var(--line);
+    background: var(--surface-1);
+}
+
+.serverListing[selected],
+.accountListing[selected] {
+    border-color: var(--accent-hi);
+    background: var(--surface-3);
+}
+
+@media (max-width: 700px) {
+    #landingContainer > #lower .launchPanel {
+        column-gap: var(--space-2);
+        padding: var(--space-2);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ * Settings, finished. One content column, one card language, and controls
+ * that read as controls. Earlier layers sized each block at 75% of the pane;
+ * they now share a single readable measure.
+ * ------------------------------------------------------------------------- */
+
+#settingsContainerRight .settingsTab > * {
+    width: 100%;
+    max-width: 46rem;
+    box-sizing: border-box;
+}
+
+#settingsContainerRight .settingsTab > .settingsTabHeader {
+    margin-bottom: var(--space-6);
+}
+
+.settingsTabHeaderDesc {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.settingsFieldContainer,
+.settingsFileSelContainer,
+#settingsGameResolutionContainer,
+#settingsMemoryContainer,
+#settingsJVMOptsContainer {
+    border-bottom-color: var(--line-soft);
+}
+
+.settingsFieldTitle {
+    font-size: 15px;
+    color: var(--text-1);
+}
+
+.settingsFieldDesc,
+.settingsFileSelDesc,
+#settingsMemoryDesc,
+#settingsJVMOptsDesc,
+#settingsShaderpackDesc {
+    color: var(--text-3);
+    line-height: 1.5;
+}
+
+.settingsFieldLeft {
+    gap: var(--space-1);
+    padding-right: var(--space-5);
+}
+
+/* Navigation: icon, label, and the GG mark above them. */
+#settingsNavHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+#settingsNavHeaderIcon {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+}
+
+.settingsNavItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    text-align: left;
+}
+
+.settingsNavIcon.tabler-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--text-3);
+    transition: color var(--dur) var(--ease-out);
+}
+
+.settingsNavItem:hover .settingsNavIcon,
+.settingsNavItem:focus-visible .settingsNavIcon,
+.settingsNavItem[selected] .settingsNavIcon {
+    color: var(--accent-hi);
+}
+
+/* Inputs share one field style. */
+#settingsContainer input[type=number],
+#settingsContainer input[type=text] {
+    color: var(--text-1);
+    background: var(--night-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+#settingsContainer input[type=number]:focus,
+#settingsContainer input[type=text]:focus {
+    border-color: var(--accent-hi);
+}
+
+#settingsContainer input[type=number][error] {
+    color: var(--status-bad);
+    border-color: var(--status-bad);
+    background: rgba(255, 93, 108, 0.10);
+}
+
+#settingsGameResolutionCross {
+    color: var(--text-3);
+}
+
+/* File selectors: icon, path and action joined into one control. */
+.settingsFileSelActions {
+    width: 100%;
+    align-items: stretch;
+}
+
+.settingsFileSelIcon {
+    padding: 0 var(--space-3);
+    color: var(--text-2);
+    background: var(--night-2);
+    border: 1px solid var(--line);
+    border-right: none;
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.settingsFileSelSVG {
+    fill: none;
+}
+
+.settingsFileSelVal {
+    height: 36px;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    color: var(--text-2) !important;
+}
+
+.settingsFileSelButton {
+    padding: 0 var(--space-4);
+    font-weight: 700;
+    color: var(--text-1);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-line);
+    border-left: none;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    transition: background var(--dur-fast) var(--ease-out);
+}
+
+.settingsFileSelButton:hover,
+.settingsFileSelButton:focus-visible {
+    background: var(--accent);
+    text-shadow: none;
+}
+
+.settingsFileSelButton:active {
+    color: var(--text-1);
+    text-shadow: none;
+    background: var(--accent-deep);
+}
+
+#settingsJVMOptsContent .settingsFileSelIcon {
+    border-right: 1px solid var(--line);
+}
+
+#settingsJVMOptsVal {
+    height: 36px;
+    box-sizing: border-box;
+}
+
+/* Selected server card on the Mods and Performance tabs. */
+.settingsSelServContainer {
+    align-items: center;
+    padding: var(--space-2) var(--space-3);
+    background: var(--surface-1);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+}
+
+.settingsSelServContent .serverListingImg {
+    border-color: var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--night-1);
+    image-rendering: pixelated;
+}
+
+.serverListingVersion {
+    color: var(--text-1);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-line);
+    height: auto;
+    padding: 1px 5px;
+    border-radius: var(--radius-sm);
+}
+
+.serverListingRevision {
+    color: var(--text-3);
+}
+
+.settingsSwitchServerButton {
+    opacity: 1;
+    padding: var(--space-2) var(--space-4);
+    color: var(--text-1);
+    font-family: inherit;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    transition: background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.settingsSwitchServerButton:hover,
+.settingsSwitchServerButton:focus-visible {
+    box-shadow: none;
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
+}
+
+.settingsSwitchServerButton:active {
+    box-shadow: none;
+    color: var(--text-1);
+    background: var(--accent-deep);
+    border-color: var(--accent-line);
+}
+
+.settingsModsHeader,
+#settingsMemoryTitle,
+.settingsFileSelTitle,
+#settingsJVMOptsTitle {
+    color: var(--text-1);
+    border-bottom-color: var(--line-soft);
+}
+
+/* About and Updates: the GG mark, a channel badge, real buttons. */
+#settingsAboutCurrentContainer,
+#settingsUpdateStatusContainer,
+.settingsChangelogContainer {
+    background: var(--surface-1);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+}
+
+#settingsAboutCurrentContent,
+#settingsUpdateStatusContent,
+.settingsChangelogContent {
+    padding: var(--space-5);
+}
+
+#settingsAboutCurrentHeadline,
+#settingsUpdateStatusHeadline,
+.settingsChangelogHeadline {
+    gap: var(--space-4);
+    padding-bottom: var(--space-4);
+    border-bottom-color: var(--line-soft);
+}
+
+#settingsAboutLogo {
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    image-rendering: pixelated;
+}
+
+#settingsAboutTitle,
+#settingsUpdateTitle {
+    padding-left: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-1);
+}
+
+#settingsAboutCurrentVersion,
+#settingsUpdateVersion {
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-bottom-color: var(--line-soft);
+}
+
+#settingsAboutCurrentVersionCheck,
+#settingsUpdateVersionCheck {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    color: var(--text-on-accent);
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 3px 0 var(--accent-deep);
+}
+
+#settingsAboutCurrentVersionCheck svg,
+#settingsUpdateVersionCheck svg {
+    width: 16px;
+    height: 16px;
+}
+
+#settingsAboutCurrentVersionCheck[data-channel="prerelease"],
+#settingsUpdateVersionCheck[data-channel="prerelease"] {
+    color: var(--night-0);
+    background: var(--lantern);
+    box-shadow: 0 3px 0 #8a4a12;
+}
+
+#settingsAboutCurrentVersionDetails,
+#settingsUpdateVersionDetails {
+    margin-left: 0;
+}
+
+#settingsAboutCurrentVersionTitle,
+#settingsUpdateVersionTitle {
+    font-family: inherit;
+    color: var(--accent-hi);
+}
+
+#settingsAboutCurrentVersionTitle[data-channel="prerelease"],
+#settingsUpdateVersionTitle[data-channel="prerelease"] {
+    color: var(--lantern);
+}
+
+#settingsAboutCurrentVersionLine,
+#settingsUpdateVersionLine {
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+}
+
+#settingsAboutButtons {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: 0 var(--space-5) var(--space-5);
+    margin: 0;
+}
+
+.settingsAboutButton {
+    padding: var(--space-2) var(--space-3);
+    font-size: 13px;
+    color: var(--text-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+
+.settingsAboutButton:hover,
+.settingsAboutButton:focus-visible {
+    color: var(--text-1);
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
+}
+
+.settingsAboutButton:active {
+    color: var(--text-2);
+}
+
+.settingsChangelogLabel {
+    color: var(--text-3);
+}
+
+.settingsChangelogTitle {
+    font-family: var(--font-display);
+    color: var(--text-1);
+}
+
+.settingsChangelogText {
+    color: var(--text-2);
+    line-height: 1.6;
+}
+
+.settingsChangelogText code,
+.settingsChangelogText tt {
+    color: var(--text-1);
+    background: var(--night-1);
+    font-family: inherit;
+}
+
+.settingsChangelogText a.commit-link {
+    color: var(--accent-hi);
+}
+
+.settingsChangelogActions {
+    padding: 0 var(--space-5) var(--space-5);
+}
+
+#settingsUpdateActionContainer {
+    padding-top: var(--space-4);
+}
+
+#settingsUpdateActionButton {
+    align-items: flex-start;
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-5);
+    font-size: 15px;
+    color: var(--text-on-accent);
+    background: var(--accent);
+    border: 1px solid var(--accent-hi);
+    border-radius: var(--radius-md);
+    box-shadow: 0 3px 0 var(--accent-deep);
+    transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+#settingsUpdateActionButton:hover,
+#settingsUpdateActionButton:focus-visible {
+    text-shadow: none;
+    background: var(--accent-hover);
+}
+
+#settingsUpdateActionButton:active {
+    color: var(--text-on-accent);
+    text-shadow: none;
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--accent-deep);
+}
+
+#settingsUpdateActionButton:disabled {
+    color: var(--text-3);
+    background: var(--night-2);
+    border-color: var(--line-soft);
+    box-shadow: none;
+}
+
+.settingsUpdateHint {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* ---------------------------------------------------------------------------
+ * Server card, bottom left. The server itself, live: who is on, how far
+ * away it is, and what it says about itself.
+ * ------------------------------------------------------------------------- */
+
+#landingContainer > #lower > #left .bot_wrapper {
+    width: 100%;
+}
+
+#serverCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: min(100%, 400px);
+    box-sizing: border-box;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-2);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+#serverCardHead {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+#serverCardIcon {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    image-rendering: pixelated;
+}
+
+#serverCardTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+#serverCardName {
+    font-family: var(--font-display);
+    font-size: clamp(15px, 1.4vw, 20px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#serverCardStatus {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+}
+
+#serverCardDot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: var(--text-3);
+}
+
+#serverCard[data-state="checking"] #serverCardDot {
+    animation: serverCardPulse 1s steps(2, jump-none) infinite alternate;
+}
+
+#serverCard[data-state="online"] #serverCardDot {
+    background: var(--status-ok);
+    box-shadow: 0 0 0 3px rgba(127, 209, 79, 0.18);
+}
+
+#serverCard[data-state="offline"] #serverCardDot {
+    background: var(--status-bad);
+}
+
+#serverCard[data-state="offline"] #serverCardStatusText {
+    color: var(--status-bad);
+}
+
+@keyframes serverCardPulse {
+    to { opacity: 0.3; }
+}
+
+#serverCardLatency {
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+}
+
+#serverCardLatency:empty {
+    display: none;
+}
+
+#serverCardLatency::before {
+    content: '·';
+    margin-right: 6px;
+}
+
+#serverCardMotd {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-2);
+    white-space: pre-line;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+#serverCardMotd:empty {
+    display: none;
+}
+
+#serverCardPlayers {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+#serverCardPlayers:has(#serverCardMeter:empty) {
+    display: none;
+}
+
+#serverCardMeter {
+    display: flex;
+    flex: none;
+    gap: 2px;
+}
+
+#serverCardMeter i {
+    width: 6px;
+    height: 12px;
+    background: rgba(196, 160, 255, 0.16);
+}
+
+#serverCardMeter i.is-filled {
+    background: var(--accent-hi);
+    box-shadow: 0 2px 0 var(--accent-deep);
+}
+
+#serverCardPlayerText {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 12px;
+    color: var(--text-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#serverCardHeads {
+    display: flex;
+    flex: none;
+    align-items: center;
+}
+
+#serverCardHeads img {
+    width: 22px;
+    height: 22px;
+    margin-left: -6px;
+    border: 2px solid var(--night-1);
+    border-radius: var(--radius-sm);
+    image-rendering: pixelated;
+}
+
+#serverCardHeads img:first-child {
+    margin-left: 0;
+}
+
+.serverCardMore {
+    margin-left: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+}
+
+#serverCardFoot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--line-soft);
+}
+
+#serverCardVersion {
+    min-width: 0;
+    font-size: 11px;
+    color: var(--text-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#serverCardAddress {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 6px;
+    padding: 3px var(--space-2);
+    font: inherit;
+    font-size: 11px;
+    color: var(--text-2);
+    background: transparent;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+        color var(--dur-fast) var(--ease-out),
+        background var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+}
+
+#serverCardAddress svg {
+    width: 13px;
+    height: 13px;
+}
+
+#serverCardAddress:hover,
+#serverCardAddress:focus-visible {
+    color: var(--text-1);
+    background: var(--accent-dim);
+    border-color: var(--accent-line);
+}
+
+#serverCardAddress[data-copied] {
+    color: var(--status-ok);
+    border-color: rgba(127, 209, 79, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #serverCard[data-state="checking"] #serverCardDot {
+        animation: none;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+ * Across window sizes. The window is held at 860x520 or larger (index.js);
+ * from there to a full 4K screen the bands size to their content, panels and
+ * type scale with the window, and nothing is allowed to sit on an edge.
+ * ------------------------------------------------------------------------- */
+
+/* The footer was a fixed share of the height, shorter than the panels inside
+   it at small sizes, so they pressed against the bottom edge. The view is now
+   a column: the top band takes what is left and the footer takes what it
+   needs, keeping its own bottom margin. */
+#landingContainer {
+    display: flex;
+    flex-direction: column;
+    --landing-panel-width: clamp(300px, 27vw, 520px);
+    --landing-card-text: clamp(12px, 0.85vw, 15px);
+    --landing-card-small: clamp(11px, 0.72vw, 13px);
+}
+
+#landingContainer > #upper {
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+}
+
+#landingContainer > #lower {
+    flex: none;
+    height: auto;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    padding-top: var(--space-4);
+    padding-bottom: clamp(16px, 3.5vh, 40px);
+}
+
+#serverCard,
+#landingContainer > #lower .launchPanel {
+    width: min(100%, var(--landing-panel-width));
+}
+
+#landingContainer > #lower > #center .bot_wrapper {
+    width: auto;
+}
+
+#launch_button {
+    white-space: nowrap;
+}
+
+#launch_button .launchLabel {
+    white-space: nowrap;
+}
+
+#serverCardIcon {
+    width: clamp(36px, 2.8vw, 52px);
+    height: clamp(36px, 2.8vw, 52px);
+}
+
+#serverCardName {
+    font-size: clamp(15px, 1.35vw, 24px);
+}
+
+#serverCardStatus,
+#serverCardMotd,
+#serverCardPlayerText {
+    font-size: var(--landing-card-text);
+}
+
+#serverCardVersion,
+#serverCardAddress,
+.serverCardMore {
+    font-size: var(--landing-card-small);
+}
+
+#serverCardMeter i {
+    width: clamp(6px, 0.45vw, 9px);
+    height: clamp(12px, 0.9vw, 17px);
+}
+
+#serverCardHeads img {
+    width: clamp(22px, 1.6vw, 30px);
+    height: clamp(22px, 1.6vw, 30px);
+}
+
+#serverCardAddress {
+    max-width: 60%;
+    min-width: 0;
+}
+
+#serverCardAddressText {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Settings: the rail was a quarter of the window, 480px of navigation on a
+   1920 screen. It now holds a reading width; the content takes the rest and
+   keeps its column centered once there is room to spare. */
+#settingsContainerLeft {
+    flex: none;
+    width: clamp(200px, 20vw, 280px);
+}
+
+#settingsContainerRight {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+}
+
+#settingsContainerRight .settingsTab > * {
+    margin-inline: auto;
+}
+
+#settingsNavHeaderText,
+.settingsNavItem span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#settingsNavHeader {
+    min-width: 0;
+}
+
+.settingsSelServContent {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.settingsSelServContent .serverListingDetails {
+    min-width: 0;
+}
+
+.settingsSelServContent .serverListingName,
+.settingsSelServContent .serverListingDescription {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settingsSwitchServerContainer {
+    flex: none;
+}
+
+/* News: a little more room on large screens, the same margins on small. */
+#newsPanel {
+    width: min(clamp(880px, 56vw, 1120px), 100%);
+    height: min(100%, clamp(640px, 70vh, 880px));
 }

@@ -1,0 +1,32 @@
+{
+  "title": "GordosGang Launcher",
+  "description": "Noticias de GordosGang y del servidor Homestead",
+  "items": [
+    {
+      "id": "gordosgang-launcher-v1",
+      "title": "Llega GordosGang Launcher v1",
+      "date": "2026-10-03T19:30:00-03:00",
+      "author": "GordosGang",
+      "summary": "La primera versión del launcher propio de la banda: nueva cara, el servidor en vivo y todo en español.",
+      "html": "<p>Ya está aquí la <strong>v1 del launcher de GordosGang</strong>. Lo rehicimos de arriba abajo para que entrar a Homestead sea abrir, pulsar <strong>Jugar</strong> y listo.</p><h2>Qué trae</h2><ul><li><strong>Nueva cara.</strong> La noche de GordosGang de fondo, colores violeta y una tipografía pixelada a juego.</li><li><strong>El servidor en vivo.</strong> Abajo a la izquierda ves si Homestead está en línea, la latencia, cuánta gente hay conectada y sus caras. Un clic en la dirección y la copias.</li><li><strong>Se aparta mientras juegas.</strong> El launcher se oculta cuando Minecraft termina de cargar y vuelve al cerrar el juego. Si prefieres que se quede, lo cambias en Ajustes → Launcher.</li><li><strong>Tu skin, la de verdad.</strong> El avatar muestra la skin que llevas puesta, no una versión antigua en caché.</li><li><strong>Noticias como esta.</strong> Las novedades del servidor llegan aquí; el punto en el botón Noticias te avisa cuando hay algo nuevo.</li><li><strong>Todo en español</strong>, desde el inicio de sesión hasta los errores.</li></ul><h2>Si ya lo tenías</h2><p>Tu cuenta, tus ajustes y los archivos del juego se conservan. Si el launcher pide iniciar sesión otra vez, hazlo con la misma cuenta de Microsoft.</p><p>¿Algo no va? Avísanos en el Discord y lo miramos.</p>",
+      "link": "https://discord.gg/zNWUXdt"
+    },
+    {
+      "id": "primeros-pasos-homestead",
+      "title": "Primeros pasos en Homestead",
+      "date": "2026-10-03T19:00:00-03:00",
+      "author": "GordosGang",
+      "summary": "Cómo entrar por primera vez y dejar el juego fino.",
+      "html": "<ol><li><strong>Inicia sesión</strong> con tu cuenta de Microsoft que tenga Minecraft: Java Edition.</li><li><strong>Pulsa Jugar.</strong> La primera vez se descargan Fabric, los mods y Java; tarda unos minutos según tu conexión. Las siguientes veces solo se comprueban los archivos.</li><li><strong>Entra directo.</strong> Con la opción de entrar automáticamente activada, Minecraft se conecta solo a Homestead al abrirse.</li></ol><h2>Para que vaya fluido</h2><ul><li>En <strong>Ajustes → Rendimiento</strong> elige la memoria: Homestead necesita al menos <strong>4 GB</strong> y va mejor con <strong>8 GB</strong>. Si la barra se pone ámbar o roja, es mucha memoria para tu equipo; baja un poco.</li><li>Los <strong>shaders</strong> son opcionales y piden una buena gráfica. Se activan en Ajustes → Mods.</li></ul><h2>Si algo falla</h2><p>Cierra el juego y vuelve a pulsar Jugar: el launcher repara los archivos que falten o estén dañados. Si sigue fallando, pásanos una captura en el Discord.</p>",
+      "link": "https://discord.gg/zNWUXdt"
+    },
+    {
+      "id": "homestead-1.3.7",
+      "title": "Homestead disponible",
+      "date": "2026-10-03T15:00:00+00:00",
+      "author": "GordosGang",
+      "summary": "El launcher está conectado con Homestead 1.3.7.",
+      "html": "<p>El launcher ya descarga y valida el cliente oficial de Homestead 1.3.7.</p>"
+    }
+  ]
+}

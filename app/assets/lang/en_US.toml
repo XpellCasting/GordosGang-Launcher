@@ -1,3 +1,7 @@
+[ejs.app]
+title = "GordosGang Launcher"
+loadingLabel = "Loading GordosGang Launcher"
+
 [ejs.landing]
 updateAvailableTooltip = "Update Available"
 usernamePlaceholder = "Username"
@@ -17,6 +21,11 @@ newsErrorLoadSpan = "Checking for News.."
 newsErrorFailedSpan = "Failed to Load News"
 newsErrorRetryButton = "Try Again"
 newsErrorNoneSpan = "No News"
+newsPrevious = "Previous article"
+newsNext = "Next article"
+newsOpenLink = "Open in browser"
+serverCardChecking = "Checking…"
+serverCardCopy = "Copy address"
 
 [ejs.login]
 loginCancelText = "Cancel"
@@ -36,8 +45,11 @@ loginPasswordDisclaimer2 = "{appName} is not affiliated with Mojang AB."
 
 [ejs.loginOptions]
 loginOptionsTitle = "Login Options"
+loginOptionsSubtitle = "Choose how you want to sign in."
 loginWithMicrosoft = "Login with Microsoft"
 loginWithMojang = "Login with Mojang"
+providerMicrosoft = "Microsoft"
+providerMojang = "Mojang"
 cancelButton = "Cancel"
 
 [ejs.overlay]
@@ -100,6 +112,8 @@ jvmOptsDesc = "Options to be provided to the JVM at runtime. <em>-Xms</em> and <
 launcherTabHeaderText = "Launcher Settings"
 launcherTabHeaderDesc = "Options related to the launcher itself."
 allowPrereleaseTitle = "Allow Pre-Release Updates."
+hideOnGameStartTitle = "Hide the launcher while playing"
+hideOnGameStartDesc = "The launcher hides once Minecraft has loaded and comes back when the game closes."
 allowPrereleaseDesc = "Pre-Releases include new features which may have not been fully tested or integrated.<br>This will always be true if you are using a pre-release version."
 dataDirectoryTitle = "Data Directory"
 selectDataDirectory = "Select Data Directory"
@@ -127,6 +141,9 @@ updateReleaseNotes = "Update Release Notes"
 waitingText = "Waiting for Microsoft.."
 
 [ejs.welcome]
+welcomeHeader = "WELCOME TO GORDOSGANG"
+welcomeDescription = "This launcher installs and keeps everything you need to play on the server up to date: mods, settings and Java."
+welcomeDescCTA = "You are just a few clicks away."
 continueButton = "CONTINUE"
 
 
@@ -180,7 +197,7 @@ javaDownloadPrepare = "Preparing Java Download.."
 javaDownloadFailureTitle = "Error During Java Download"
 javaDownloadFailureText = "See console (CTRL + Shift + i) for more details."
 javaRequired = "Java is Required<br>to Launch"
-javaRequiredMessage = 'A valid x64 installation of Java {major} is required to launch.<br><br>Please refer to our <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Java Management Guide</a> for instructions on how to manually install Java.'
+javaRequiredMessage = 'A valid x64 installation of Java {major} is required to launch. Install Java manually, select its executable in Settings, and try again.'
 javaRequiredDismiss = "I Understand"
 javaRequiredCancel = "Go Back"
 
@@ -203,12 +220,23 @@ downloadingFiles = "Downloading files.."
 errorDuringFileDownloadTitle = "Error During File Download"
 preparingToLaunch = "Preparing to launch.."
 launchingGame = "Launching game.."
-launchWrapperNotDownloaded = "The main file, LaunchWrapper, failed to download properly. As a result, the game cannot launch.<br><br>To fix this issue, temporarily turn off your antivirus software and launch the game again.<br><br>If you have time, please <a href=\"https://github.com/dscalzi/HeliosLauncher/issues\">submit an issue</a> and let us know what antivirus software you use. We'll contact them and try to straighten things out."
+launchWrapperNotDownloaded = "The main file, LaunchWrapper, failed to download properly, so the game cannot launch.<br><br>Check whether your antivirus blocked the download, then try again. If the problem continues, <a href=\"https://github.com/XpellCasting/GordosGang-Launcher/issues\">report the issue</a>."
 doneEnjoyServer = "Done. Enjoy the server!"
 checkConsoleForDetails = "Please check the console (CTRL + Shift + i) for more details."
 
 [js.landing.news]
 checking = "Checking for News"
+byAuthor = "by {author}"
+
+[js.landing.serverCard]
+online = "Online"
+offline = "Offline"
+offlineHint = "The server is not responding right now. Try again in a bit."
+latency = "{ms} ms"
+players = "{online} of {max} playing"
+noPlayers = "Nobody online · {max} slots"
+more = "+{count}"
+copied = "Address copied!"
 
 [js.landing.discord]
 loading = "Loading game.."
@@ -285,6 +313,10 @@ errorMessage = "We were unable to authenticate your Microsoft account. Please tr
 okButton = "OK"
 
 [js.uibinder.startup]
+stageConnecting = "Contacting servers"
+stagePreparing = "Preparing your installation"
+stageReady = "Ready"
+loadingLabel = "Loading GordosGang Launcher"
 fatalErrorTitle = "Fatal Error: Unable to Load Distribution Index"
 fatalErrorMessage = "A connection could not be established to our servers to download the distribution index. No local copies were available to load. <br><br>The distribution index is an essential file which provides the latest server information. The launcher is unable to start without it. Ensure you are connected to the internet and relaunch the application."
 closeButton = "Close"

@@ -7,7 +7,7 @@ const logger = LoggerUtil.getLogger('ConfigManager')
 
 const sysRoot = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Application Support' : process.env.HOME)
 
-const dataPath = path.join(sysRoot, '.helioslauncher')
+const dataPath = path.join(sysRoot, '.gordosgang-launcher')
 
 const launcherDir = require('@electron/remote').app.getPath('userData')
 
@@ -59,14 +59,38 @@ exports.getAbsoluteMaxRAM = function(_ram){
     return Math.floor((mem-(gT16 > 0 ? (Number.parseInt(gT16/8) + (16*1073741824)/4) : mem/4))/1073741824)
 }
 
+// Share of physical memory the heap may claim. The JVM needs another 2-3GB
+// outside the heap for metaspace, the code cache and the native GL buffers a
+// heavily modded pack allocates, and the OS, the launcher and whatever else the
+// player has open all come out of the same 100%. A distribution declaring a
+// recommendation cannot know the machine, so an 8GB recommendation on a 16GB
+// laptop commits the heap into swap and the JVM dies of SIGBUS in its own
+// compiler thread long before the heap is ever full.
+const MAX_HEAP_SHARE_OF_PHYSICAL = 0.40
+
 function resolveSelectedRAM(ram) {
     if(ram?.recommended != null) {
-        return `${ram.recommended}M`
+        return `${capRecommendedRAM(ram)}M`
     } else {
         // Legacy behavior
         const mem = os.totalmem()
         return mem >= (8*1073741824) ? '4G' : (mem >= (6*1073741824) ? '3G' : '2G')
     }
+}
+
+/**
+ * The declared recommendation, lowered to what this machine can actually back.
+ * Never raises it, and never goes below the declared minimum.
+ *
+ * @param {*} ram The distribution's ram block.
+ * @returns {number} Megabytes.
+ */
+function capRecommendedRAM(ram) {
+    const share = os.totalmem() * MAX_HEAP_SHARE_OF_PHYSICAL
+    // Round down to whole gigabytes so the value stays readable in the UI.
+    const affordable = Math.floor(share / 1073741824) * 1024
+    const floor = ram.minimum ?? 0
+    return Math.max(floor, Math.min(ram.recommended, affordable))
 }
 
 /**
@@ -86,6 +110,7 @@ const DEFAULT_CONFIG = {
         },
         launcher: {
             allowPrerelease: false,
+            hideOnGameStart: true,
             dataDirectory: dataPath
         }
     },
@@ -148,6 +173,9 @@ exports.load = function(){
         }
         if(doValidate){
             config = validateKeySet(DEFAULT_CONFIG, config)
+            // javaConfig is on the validation blacklist, so per-server
+            // defaults have to be migrated explicitly.
+            migrateJavaConfig()
             exports.save()
         }
     }
@@ -529,20 +557,75 @@ function defaultJavaConfig8(ram) {
     }
 }
 
+// Every option set this launcher has shipped as the Java 17 default, oldest
+// first. migrateJavaConfig moves a config carrying any of these untouched onto
+// the current set; anything edited by hand is left alone.
+const SUPERSEDED_JVM_OPTIONS_17 = [
+    [
+        '-XX:+UnlockExperimentalVMOptions',
+        '-XX:+UseG1GC',
+        '-XX:G1NewSizePercent=20',
+        '-XX:G1ReservePercent=20',
+        '-XX:MaxGCPauseMillis=50',
+        '-XX:G1HeapRegionSize=32M'
+    ],
+    [
+        // ShenandoahGuaranteedGCInterval pushed the periodic collection out to
+        // ~17 minutes, which also suppressed the idle uncommit that returns
+        // unused heap to the OS. On a 16GB machine that keeps the full heap
+        // resident and the whole system ends up in swap.
+        '-XX:+UnlockExperimentalVMOptions',
+        '-XX:+UseShenandoahGC',
+        '-XX:ShenandoahGuaranteedGCInterval=1000000',
+        '-XX:+DisableExplicitGC',
+        '-XX:+ParallelRefProcEnabled',
+        '-XX:+PerfDisableSharedMem'
+    ]
+]
+
+// G1 produces long enough pauses on heavily modded packs that the client can
+// miss the server keepalive window and get dropped mid-session. Shenandoah is
+// concurrent and ships with every Corretto build the launcher installs, and at
+// its default collection interval it hands unused heap back to the OS.
+const JVM_OPTIONS_17 = [
+    '-XX:+UnlockExperimentalVMOptions',
+    '-XX:+UseShenandoahGC',
+    '-XX:+DisableExplicitGC',
+    '-XX:+ParallelRefProcEnabled',
+    '-XX:+PerfDisableSharedMem'
+]
+
 function defaultJavaConfig17(ram) {
     return {
-        minRAM: resolveSelectedRAM(ram),
+        // A floor below the ceiling, so Shenandoah can uncommit back down to it
+        // while the player is idle or in a menu instead of holding the peak for
+        // the whole session.
+        minRAM: `${ram?.minimum ?? 2048}M`,
         maxRAM: resolveSelectedRAM(ram),
         executable: null,
-        jvmOptions: [
-            '-XX:+UnlockExperimentalVMOptions',
-            '-XX:+UseG1GC',
-            '-XX:G1NewSizePercent=20',
-            '-XX:G1ReservePercent=20',
-            '-XX:MaxGCPauseMillis=50',
-            '-XX:G1HeapRegionSize=32M'
-        ],
+        jvmOptions: [...JVM_OPTIONS_17],
     }
+}
+
+function sameOptions(a, b) {
+    return Array.isArray(a) && a.length === b.length && a.every((v, i) => v === b[i])
+}
+
+/**
+ * Move servers that still carry an untouched legacy default onto the current
+ * one. A config whose options were edited by hand is left alone.
+ */
+function migrateJavaConfig(){
+    let migrated = false
+    for(const serverid of Object.keys(config.javaConfig ?? {})){
+        const entry = config.javaConfig[serverid]
+        if(SUPERSEDED_JVM_OPTIONS_17.some(old => sameOptions(entry?.jvmOptions, old))){
+            entry.jvmOptions = [...JVM_OPTIONS_17]
+            migrated = true
+            logger.info(`Migrated JVM options for ${serverid} to the current defaults.`)
+        }
+    }
+    return migrated
 }
 
 /**
@@ -554,6 +637,34 @@ function defaultJavaConfig17(ram) {
 exports.ensureJavaConfig = function(serverid, effectiveJavaOptions, ram) {
     if(!Object.prototype.hasOwnProperty.call(config.javaConfig, serverid)) {
         config.javaConfig[serverid] = defaultJavaConfig(effectiveJavaOptions, ram)
+        return
+    }
+    capOldDefaultRAM(serverid, ram)
+}
+
+/**
+ * Lower a heap this launcher itself handed out before the value was capped
+ * against physical memory. Only a config still carrying that exact figure is
+ * touched, so a size the player picked in Settings is left alone.
+ *
+ * @param {string} serverid The server id.
+ * @param {*} ram The distribution's ram block.
+ */
+function capOldDefaultRAM(serverid, ram) {
+    if(ram?.recommended == null){
+        return
+    }
+    const capped = capRecommendedRAM(ram)
+    if(capped >= ram.recommended){
+        return
+    }
+    const entry = config.javaConfig[serverid]
+    const uncapped = `${ram.recommended}M`
+    for(const key of ['minRAM', 'maxRAM']){
+        if(entry[key] === uncapped){
+            entry[key] = `${capped}M`
+            logger.info(`Lowered ${key} for ${serverid} from ${uncapped} to ${capped}M to fit physical memory.`)
+        }
     }
 }
 
@@ -790,4 +901,23 @@ exports.getAllowPrerelease = function(def = false){
  */
 exports.setAllowPrerelease = function(allowPrerelease){
     config.settings.launcher.allowPrerelease = allowPrerelease
+}
+
+/**
+ * Check if the launcher window should get out of the way while the game runs.
+ * 
+ * @param {boolean} def Optional. If true, the default value will be returned.
+ * @returns {boolean} Whether the launcher hides once Minecraft has started.
+ */
+exports.getHideOnGameStart = function(def = false){
+    return !def ? config.settings.launcher.hideOnGameStart : DEFAULT_CONFIG.settings.launcher.hideOnGameStart
+}
+
+/**
+ * Change whether the launcher window hides once Minecraft has started.
+ * 
+ * @param {boolean} hideOnGameStart Whether the launcher hides once Minecraft has started.
+ */
+exports.setHideOnGameStart = function(hideOnGameStart){
+    config.settings.launcher.hideOnGameStart = hideOnGameStart
 }

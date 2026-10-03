@@ -285,28 +285,19 @@ function settingsNavItemListener(ele, fade = true){
     document.getElementById(prevTab).onscroll = null
     document.getElementById(selectedSettingsTab).onscroll = settingsTabScrollListener
 
+    const prevEl = document.getElementById(prevTab)
+    const nextEl = document.getElementById(selectedSettingsTab)
+    gsap.killTweensOf([prevEl, nextEl])
+    gsap.set(prevEl, { display: 'none', clearProps: 'opacity,transform' })
+    nextEl.scrollTop = 0
+    gsap.set(nextEl, { display: 'block' })
+    settingsTabScrollListener({ target: nextEl })
+
     if(fade){
-        $(`#${prevTab}`).fadeOut(250, () => {
-            $(`#${selectedSettingsTab}`).fadeIn({
-                duration: 250,
-                start: () => {
-                    settingsTabScrollListener({
-                        target: document.getElementById(selectedSettingsTab)
-                    })
-                }
-            })
-        })
-    } else {
-        $(`#${prevTab}`).hide(0, () => {
-            $(`#${selectedSettingsTab}`).show({
-                duration: 0,
-                start: () => {
-                    settingsTabScrollListener({
-                        target: document.getElementById(selectedSettingsTab)
-                    })
-                }
-            })
-        })
+        gsap.fromTo(nextEl,
+            { opacity: 0, y: 8 },
+            { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out', clearProps: 'opacity,transform' }
+        )
     }
 }
 
@@ -533,10 +524,19 @@ function processLogOut(val, isLastAccount){
                 switchView(getCurrentView(), VIEWS.loginOptions)
             }
         })
-        $(parent).fadeOut(250, () => {
-            parent.remove()
-        })
+        removeAccountCard(parent)
     }
+}
+
+/**
+ * Collapse an account card out of its list, then drop it from the DOM.
+ *
+ * @param {Element} card The account card to remove.
+ */
+function removeAccountCard(card){
+    gsap.timeline({ onComplete: () => card.remove() })
+        .to(card, { opacity: 0, x: -12, duration: 0.18, ease: 'power2.in' })
+        .to(card, { height: 0, marginTop: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0, duration: 0.2, ease: 'power2.inOut' })
 }
 
 // Bind reply for Microsoft Logout.
@@ -640,7 +640,7 @@ function populateAuthAccounts(){
 
         const accHtml = `<div class="settingsAuthAccount" uuid="${acc.uuid}">
             <div class="settingsAuthAccountLeft">
-                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://mc-heads.net/body/${acc.uuid}/60">
+                <img class="settingsAuthAccountImage" alt="${acc.displayName}" src="https://mc-heads.net/body/${acc.uuid}/60" data-skin-uuid="${acc.uuid}" data-skin-view="body" data-skin-variant="60">
             </div>
             <div class="settingsAuthAccountRight">
                 <div class="settingsAuthAccountDetails">
@@ -672,6 +672,8 @@ function populateAuthAccounts(){
 
     settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr
     settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
+    SkinResolver.applyTo(settingsCurrentMicrosoftAccounts)
+    SkinResolver.applyTo(settingsCurrentMojangAccounts)
 }
 
 /**
@@ -1126,9 +1128,16 @@ function saveAllModConfigurations(){
  * server is changed.
  */
 function animateSettingsTabRefresh(){
-    $(`#${selectedSettingsTab}`).fadeOut(500, async () => {
-        await prepareSettings()
-        $(`#${selectedSettingsTab}`).fadeIn(500)
+    const tab = document.getElementById(selectedSettingsTab)
+    gsap.killTweensOf(tab)
+    gsap.to(tab, {
+        opacity: 0.35,
+        duration: 0.1,
+        ease: 'power1.in',
+        onComplete: async () => {
+            await prepareSettings()
+            gsap.to(tab, { opacity: 1, duration: 0.18, ease: 'power1.out', clearProps: 'opacity' })
+        }
     })
 }
 
@@ -1175,9 +1184,9 @@ settingsMinRAMRange.onchange = (e) => {
 
     // Change range bar color based on the selected value.
     if(sMinV >= max/2){
-        bar.style.background = '#e86060'
+        bar.style.background = 'var(--status-bad)'
     } else if(sMinV >= max/4) {
-        bar.style.background = '#e8e18b'
+        bar.style.background = 'var(--lantern)'
     } else {
         bar.style.background = null
     }
@@ -1207,9 +1216,9 @@ settingsMaxRAMRange.onchange = (e) => {
 
     // Change range bar color based on the selected value.
     if(sMaxV >= max/2){
-        bar.style.background = '#e86060'
+        bar.style.background = 'var(--status-bad)'
     } else if(sMaxV >= max/4) {
-        bar.style.background = '#e8e18b'
+        bar.style.background = 'var(--lantern)'
     } else {
         bar.style.background = null
     }
@@ -1435,15 +1444,10 @@ function isPrerelease(version){
  */
 function populateVersionInformation(version, valueElement, titleElement, checkElement){
     valueElement.innerHTML = version
-    if(isPrerelease(version)){
-        titleElement.innerHTML = Lang.queryJS('settings.about.preReleaseTitle')
-        titleElement.style.color = '#ff886d'
-        checkElement.style.background = '#ff886d'
-    } else {
-        titleElement.innerHTML = Lang.queryJS('settings.about.stableReleaseTitle')
-        titleElement.style.color = null
-        checkElement.style.background = null
-    }
+    const channel = isPrerelease(version) ? 'prerelease' : 'stable'
+    titleElement.innerHTML = Lang.queryJS(channel === 'prerelease' ? 'settings.about.preReleaseTitle' : 'settings.about.stableReleaseTitle')
+    titleElement.dataset.channel = channel
+    checkElement.dataset.channel = channel
 }
 
 /**
@@ -1459,7 +1463,7 @@ function populateAboutVersionInformation(){
  */
 function populateReleaseNotes(){
     $.ajax({
-        url: 'https://github.com/dscalzi/HeliosLauncher/releases.atom',
+        url: 'https://github.com/XpellCasting/GordosGang-Launcher/releases.atom',
         success: (data) => {
             const version = 'v' + remote.app.getVersion()
             const entries = $(data).find('entry')

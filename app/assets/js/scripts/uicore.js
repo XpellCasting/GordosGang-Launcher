@@ -6,6 +6,7 @@
  */
 // Requirements
 const $                              = require('jquery')
+const { gsap }                       = require('gsap')
 const {ipcRenderer, shell, webFrame} = require('electron')
 const remote                         = require('@electron/remote')
 const isDev                          = require('./assets/js/isdev')
@@ -31,6 +32,63 @@ remote.getCurrentWebContents().on('devtools-opened', () => {
     console.log('%cUnless you know exactly what you\'re doing, close this window.', 'font-size: 16px')
 })
 
+// Honor the OS reduced-motion preference for every tween in the launcher.
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+const applyMotionPreference = () => {
+    gsap.globalTimeline.timeScale(prefersReducedMotion.matches ? 1000 : 1)
+}
+prefersReducedMotion.addEventListener('change', applyMotionPreference)
+applyMotionPreference()
+
+function resolveElement(target){
+    return typeof target === 'string' ? document.querySelector(target) : target
+}
+
+/**
+ * Fade an element in with GSAP, restoring the display value from the stylesheet.
+ *
+ * @param {Element|string} target The element or a selector for it.
+ * @param {number} duration Seconds.
+ * @returns {Promise<void>} Resolves once the element is fully visible.
+ */
+function fadeInElement(target, duration = 0.2){
+    const el = resolveElement(target)
+    if(el == null) return Promise.resolve()
+    gsap.killTweensOf(el)
+    el.style.display = ''
+    if(getComputedStyle(el).display === 'none'){
+        el.style.display = 'block'
+    }
+    return new Promise(resolve => {
+        gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration, ease: 'power1.out', clearProps: 'opacity', onComplete: resolve })
+    })
+}
+
+/**
+ * Fade an element out with GSAP and take it out of the layout.
+ *
+ * @param {Element|string} target The element or a selector for it.
+ * @param {number} duration Seconds.
+ * @returns {Promise<void>} Resolves once the element is hidden.
+ */
+function fadeOutElement(target, duration = 0.16){
+    const el = resolveElement(target)
+    if(el == null || getComputedStyle(el).display === 'none') return Promise.resolve()
+    gsap.killTweensOf(el)
+    return new Promise(resolve => {
+        gsap.to(el, {
+            opacity: 0,
+            duration,
+            ease: 'power1.in',
+            onComplete: () => {
+                el.style.display = 'none'
+                gsap.set(el, { clearProps: 'opacity' })
+                resolve()
+            }
+        })
+    })
+}
+
 // Disable zoom, needed for darwin.
 webFrame.setZoomLevel(0)
 webFrame.setVisualZoomLevelLimits(1, 1)
@@ -48,7 +106,7 @@ if(!isDev){
                 loggerAutoUpdater.info('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/dscalzi/HeliosLauncher/releases/download/v${info.version}/Helios-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
+                    info.darwindownload = `https://github.com/XpellCasting/GordosGang-Launcher/releases/download/v${info.version}/GordosGang-Launcher-setup-${info.version}${process.arch === 'arm64' ? '-arm64' : '-x64'}.dmg`
                     showUpdateUI(info)
                 }
                 
@@ -106,8 +164,15 @@ function changeAllowPrerelease(val){
 
 function showUpdateUI(info){
     //TODO Make this message a bit more informative `${info.version}`
-    document.getElementById('image_seal_container').setAttribute('update', true)
-    document.getElementById('image_seal_container').onclick = () => {
+    const updateBadge = document.getElementById('image_seal_container')
+    updateBadge.setAttribute('update', true)
+    updateBadge.onkeydown = (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault()
+            updateBadge.click()
+        }
+    }
+    updateBadge.onclick = () => {
         /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
         setOverlayHandler(() => {
             if(!isDev){
@@ -173,21 +238,6 @@ document.addEventListener('readystatechange', function () {
             })
         })
 
-    } else if(document.readyState === 'complete'){
-
-        //266.01
-        //170.8
-        //53.21
-        // Bind progress bar length to length of bot wrapper
-        //const targetWidth = document.getElementById("launch_content").getBoundingClientRect().width
-        //const targetWidth2 = document.getElementById("server_selection").getBoundingClientRect().width
-        //const targetWidth3 = document.getElementById("launch_button").getBoundingClientRect().width
-
-        document.getElementById('launch_details').style.maxWidth = 266.01
-        document.getElementById('launch_progress').style.width = 170.8
-        document.getElementById('launch_details_right').style.maxWidth = 170.8
-        document.getElementById('launch_progress_label').style.width = 53.21
-        
     }
 
 }, false)

@@ -74,46 +74,44 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         dismissable = false
     }
     bindOverlayKeys(toggleState, content, dismissable)
+    const container = document.getElementById('overlayContainer')
+    const panel = document.getElementById(content)
+    const showContent = () => {
+        $('#' + content).parent().children().hide()
+        $('#' + content).show()
+        $('#overlayDismiss').toggle(dismissable)
+    }
+    // The overlay brings its own scrim; a second one from settings would double it.
+    const settingsContainer = document.getElementById('settingsContainer')
+    gsap.killTweensOf([container, panel])
+
     if(toggleState){
         document.getElementById('main').setAttribute('overlay', true)
         // Make things untabbable.
         $('#main *').attr('tabindex', '-1')
-        $('#' + content).parent().children().hide()
-        $('#' + content).show()
-        if(dismissable){
-            $('#overlayDismiss').show()
-        } else {
-            $('#overlayDismiss').hide()
+        showContent()
+        if(getCurrentView() === VIEWS.settings){
+            settingsContainer.style.backgroundColor = 'transparent'
         }
-        $('#overlayContainer').fadeIn({
-            duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'transparent'
-                }
-            }
-        })
+        container.style.display = 'flex'
+        gsap.timeline()
+            .fromTo(container, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power1.out' })
+            .fromTo(panel, { opacity: 0, y: 10, scale: 0.98 }, { opacity: 1, y: 0, scale: 1, duration: 0.26, ease: 'power3.out', clearProps: 'transform,opacity' }, 0.04)
     } else {
         document.getElementById('main').removeAttribute('overlay')
         // Make things tabbable.
         $('#main *').removeAttr('tabindex')
-        $('#overlayContainer').fadeOut({
-            duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'rgba(0, 0, 0, 0.50)'
-                }
-            },
-            complete: () => {
-                $('#' + content).parent().children().hide()
-                $('#' + content).show()
-                if(dismissable){
-                    $('#overlayDismiss').show()
-                } else {
-                    $('#overlayDismiss').hide()
-                }
+        settingsContainer.style.backgroundColor = ''
+        gsap.timeline({
+            onComplete: () => {
+                container.style.display = 'none'
+                gsap.set(container, { clearProps: 'opacity' })
+                showContent()
             }
         })
+            .to(panel, { opacity: 0, y: 6, duration: 0.14, ease: 'power1.in' })
+            .to(container, { opacity: 0, duration: 0.18, ease: 'power1.in' }, 0.04)
+            .set(panel, { clearProps: 'transform,opacity' })
     }
 }
 
@@ -184,7 +182,7 @@ document.getElementById('serverSelectConfirm').addEventListener('click', async (
     }
     // None are selected? Not possible right? Meh, handle it.
     if(listings.length > 0){
-        const serv = (await DistroAPI.getDistribution()).getServerById(listings[i].getAttribute('servid'))
+        const serv = (await DistroAPI.getDistribution()).getServerById(listings[0].getAttribute('servid'))
         updateSelectedServer(serv)
         toggleOverlay(false)
     }
@@ -224,9 +222,7 @@ document.getElementById('serverSelectCancel').addEventListener('click', () => {
 })
 
 document.getElementById('accountSelectCancel').addEventListener('click', () => {
-    $('#accountSelectContent').fadeOut(250, () => {
-        $('#overlayContent').fadeIn(250)
-    })
+    fadeOutElement('#accountSelectContent').then(() => fadeInElement('#overlayContent'))
 })
 
 function setServerListingHandlers(){
@@ -305,11 +301,13 @@ function populateAccountListings(){
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
-            <img src="https://mc-heads.net/head/${accounts[i].uuid}/40">
+            <img src="https://mc-heads.net/head/${accounts[i].uuid}/40" data-skin-uuid="${accounts[i].uuid}" data-skin-variant="40">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`
     }
-    document.getElementById('accountSelectListScrollable').innerHTML = htmlString
+    const accountList = document.getElementById('accountSelectListScrollable')
+    accountList.innerHTML = htmlString
+    SkinResolver.applyTo(accountList)
 
 }
 

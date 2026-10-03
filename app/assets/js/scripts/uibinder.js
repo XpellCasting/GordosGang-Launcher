@@ -9,6 +9,7 @@ const { Type }      = require('helios-distribution-types')
 const AuthManager   = require('./assets/js/authmanager')
 const ConfigManager = require('./assets/js/configmanager')
 const { DistroAPI } = require('./assets/js/distromanager')
+const SkinResolver  = require('./assets/js/skinresolver')
 
 let rscShouldLoad = false
 let fatalStartupError = false
@@ -37,13 +38,40 @@ let currentView
  * @param {*} onNextFade Optional. Callback function to execute when the next view
  * fades in.
  */
+/**
+ * Reveal a view with a single compositor-friendly fade. Keeping this to one
+ * layer avoids the staggered transforms that made navigation feel delayed.
+ */
+function revealView(view, duration){
+    return gsap.fromTo(view,
+        { opacity: 0 },
+        { opacity: 1, duration: Math.min(duration, 0.18), ease: 'power2.out' }
+    )
+}
+
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}){
     currentView = next
-    $(`${current}`).fadeOut(currentFadeTime, async () => {
-        await onCurrentFade()
-        $(`${next}`).fadeIn(nextFadeTime, async () => {
-            await onNextFade()
-        })
+
+    // Durations stay in the caller's milliseconds so existing call sites keep
+    // their tuning, and the contract is unchanged: the outgoing view is hidden
+    // and onCurrentFade has resolved before the incoming view appears.
+    gsap.to(current, {
+        opacity: 0,
+        duration: Math.min(currentFadeTime / 1000, 0.14),
+        ease: 'power2.in',
+        onComplete: async () => {
+            $(current).hide()
+            await onCurrentFade()
+
+            // jQuery resolves the container's intended display value (flex vs
+            // block) that the inline display:none hides.
+            $(next).css('opacity', 0).show()
+            gsap.timeline({
+                onComplete: async () => {
+                    await onNextFade()
+                }
+            }).add(revealView(next, nextFadeTime / 1000))
+        }
     })
 }
 
@@ -56,11 +84,75 @@ function getCurrentView(){
     return currentView
 }
 
-// Progress represents completed startup stages, not download bytes.
-function setStartupProgress(percent){
+/* ---------------------------------------------------------------------------
+ * Startup loading screen.
+ *
+ * Progress represents completed startup stages, not download bytes, so only a
+ * handful of values ever report in. The raw number is tweened rather than
+ * written straight to the DOM, otherwise the logo fill snaps between stages.
+ * ------------------------------------------------------------------------- */
+
+const startupProgress = { value: 0 }
+
+function renderStartupProgress(){
     const track = document.getElementById('startupLoadingTrack')
-    track.style.setProperty('--startup-progress', `${percent}%`)
-    track.setAttribute('aria-valuenow', percent)
+    if(track == null){
+        return
+    }
+    track.style.setProperty('--startup-progress', `${startupProgress.value}%`)
+    track.setAttribute('aria-valuenow', Math.round(startupProgress.value))
+}
+
+/**
+ * Name the stage the launcher is actually in. Silence during a multi-second
+ * startup is what makes it read as hung.
+ */
+function setStartupStatus(key){
+    const el = document.getElementById('startupLoadingStatus')
+    if(el == null){
+        return
+    }
+    const text = Lang.queryJS(`uibinder.startup.${key}`)
+    if(el.textContent === text){
+        return
+    }
+    el.textContent = text
+}
+
+function setStartupProgress(percent){
+    return gsap.to(startupProgress, {
+        value: percent,
+        duration: 0.28,
+        ease: 'power2.out',
+        overwrite: true,
+        onUpdate: renderStartupProgress
+    })
+}
+
+/**
+ * Bring the loading logo in without running a permanent animation.
+ */
+function initStartupLoading(){
+    renderStartupProgress()
+
+    const status = document.getElementById('startupLoadingStatus')
+    status.textContent = Lang.queryJS('uibinder.startup.stageConnecting')
+
+    gsap.from('#loadingContent', { opacity: 0, duration: 0.22, ease: 'power2.out' })
+}
+
+/**
+ * Tear the loading screen down. Returns the timeline so callers can hang their
+ * own steps off the handoff.
+ */
+function dismissStartupLoading(){
+    const tl = gsap.timeline()
+
+    // Stop swallowing clicks the moment the screen starts leaving.
+    tl.set('#loadingContainer', { pointerEvents: 'none' })
+        .to('#loadingContent', { opacity: 0, duration: 0.18, ease: 'power2.out' })
+
+    return tl
 }
 
 async function showMainUI(data){
@@ -72,39 +164,52 @@ async function showMainUI(data){
         ipcRenderer.send('autoUpdateAction', 'initAutoUpdater', ConfigManager.getAllowPrerelease())
     }
 
+    setStartupStatus('stagePreparing')
     await prepareSettings(true)
     setStartupProgress(85)
     updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
     refreshServerStatus()
-    setTimeout(() => {
-        document.getElementById('frameBar').style.backgroundColor = 'rgba(0, 0, 0, 0.5)'
-        $('#main').show()
 
-        const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
+    const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
 
-        // If this is enabled in a development environment we'll get ratelimited.
-        // The relaunch frequency is usually far too high.
-        if(!isDev && isLoggedIn){
-            validateSelectedAccount()
-        }
+    let nextView
+    if(isLoggedIn){
+        nextView = VIEWS.landing
+    } else {
+        loginOptionsCancelEnabled(false)
+        loginOptionsViewOnLoginSuccess = VIEWS.landing
+        loginOptionsViewOnLoginCancel = VIEWS.loginOptions
+        nextView = VIEWS.loginOptions
+    }
+    currentView = nextView
 
-        if(isLoggedIn){
-            currentView = VIEWS.landing
-            $(VIEWS.landing).fadeIn(1000)
-        } else {
-            loginOptionsCancelEnabled(false)
-            loginOptionsViewOnLoginSuccess = VIEWS.landing
-            loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-            currentView = VIEWS.loginOptions
-            $(VIEWS.loginOptions).fadeIn(1000)
-        }
+    // Stage the destination view behind the loading screen so the two can be
+    // cross-faded. jQuery resolves the container's intended display value
+    // (flex vs block); GSAP only ever touches opacity.
+    $('#main').show()
+    $(nextView).css('opacity', 0).show()
 
-        setStartupProgress(100)
-        setTimeout(() => {
-            $('#loadingContainer').fadeOut(500)
-        }, 500)
-        
-    }, 750)
+    // If this is enabled in a development environment we'll get ratelimited.
+    // The relaunch frequency is usually far too high.
+    if(!isDev && isLoggedIn){
+        validateSelectedAccount()
+    }
+
+    setStartupStatus('stageReady')
+
+    gsap.timeline()
+        // Drive the fill to the end of the logo before anything else moves.
+        .to(startupProgress, {
+            value: 100,
+            duration: 0.25,
+            ease: 'power2.out',
+            overwrite: true,
+            onUpdate: renderStartupProgress
+        })
+        .add(dismissStartupLoading())
+        .add(revealView(nextView, 0.18), '<0.08')
+        .set('#loadingContainer', { display: 'none' })
+
     // Disable tabbing to the news container.
     initNews().then(() => {
         $('#newsContainer *').attr('tabindex', '-1')
@@ -112,8 +217,9 @@ async function showMainUI(data){
 }
 
 function showFatalStartupError(){
-    setTimeout(() => {
-        $('#loadingContainer').fadeOut(250, () => {
+    dismissStartupLoading()
+        .set('#loadingContainer', { display: 'none' })
+        .call(() => {
             document.getElementById('overlayContainer').style.background = 'none'
             setOverlayContent(
                 Lang.queryJS('uibinder.startup.fatalErrorTitle'),
@@ -126,7 +232,6 @@ function showFatalStartupError(){
             })
             toggleOverlay(true)
         })
-    }, 750)
 }
 
 /**
@@ -386,9 +491,9 @@ async function validateSelectedAccount(){
             setDismissHandler(() => {
                 if(accLen > 1){
                     prepareAccountSelectionList()
-                    $('#overlayContent').fadeOut(250, () => {
+                    fadeOutElement('#overlayContent').then(() => {
                         bindOverlayKeys(true, 'accountSelectContent', true)
-                        $('#accountSelectContent').fadeIn(250)
+                        return fadeInElement('#accountSelectContent')
                     })
                 } else {
                     const accountsObj = ConfigManager.getAuthAccounts()
@@ -419,6 +524,8 @@ function setSelectedAccount(uuid){
     updateSelectedAccount(authAcc)
     validateSelectedAccount()
 }
+
+document.addEventListener('DOMContentLoaded', initStartupLoading, { once: true })
 
 // Synchronous Listener
 document.addEventListener('readystatechange', async () => {

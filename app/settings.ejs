@@ -2,23 +2,24 @@
     <div id="settingsContainerLeft">
         <div id="settingsNavContainer">
             <div id="settingsNavHeader">
+                <img id="settingsNavHeaderIcon" src="./assets/images/AppIcon.png" alt="" width="32" height="32">
                 <span id="settingsNavHeaderText"><%- lang('settings.navHeaderText') %></span>
             </div>
             <div id="settingsNavItemsContainer">
                 <div id="settingsNavItemsContent">
-                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected><%- lang('settings.navAccount') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabMinecraft"><%- lang('settings.navMinecraft') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabMods"><%- lang('settings.navMods') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabJava"><%- lang('settings.navJava') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabLauncher"><%- lang('settings.navLauncher') %></button>
+                    <button class="settingsNavItem" rSc="settingsTabAccount" id="settingsNavAccount" selected><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg><span><%- lang('settings.navAccount') %></span></button>
+                    <button class="settingsNavItem" rSc="settingsTabMinecraft"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-16a2 2 0 0 1 -2 -2z" /><path d="M6 12h4m-2 -2v4" /><path d="M15 11l0 .01" /><path d="M18 13l0 .01" /></svg><span><%- lang('settings.navMinecraft') %></span></button>
+                    <button class="settingsNavItem" rSc="settingsTabMods"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" /></svg><span><%- lang('settings.navMods') %></span></button>
+                    <button class="settingsNavItem" rSc="settingsTabJava"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1z" /><path d="M9 9h6v6h-6z" /><path d="M3 10h2" /><path d="M3 14h2" /><path d="M10 3v2" /><path d="M14 3v2" /><path d="M21 10h-2" /><path d="M21 14h-2" /><path d="M14 21v-2" /><path d="M10 21v-2" /></svg><span><%- lang('settings.navJava') %></span></button>
+                    <button class="settingsNavItem" rSc="settingsTabLauncher"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M4 6l8 0" /><path d="M16 6l4 0" /><path d="M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M4 12l2 0" /><path d="M10 12l10 0" /><path d="M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M4 18l11 0" /><path d="M19 18l1 0" /></svg><span><%- lang('settings.navLauncher') %></span></button>
                     <div class="settingsNavSpacer"></div>
-                    <button class="settingsNavItem" rSc="settingsTabAbout"><%- lang('settings.navAbout') %></button>
-                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate"><%- lang('settings.navUpdates') %></button>
-                    <div id="settingsNavContentBottom">
-                        <div class="settingsNavDivider"></div>
-                        <button id="settingsNavDone"><%- lang('settings.navDone') %></button>
-                    </div>
+                    <button class="settingsNavItem" rSc="settingsTabAbout"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" /></svg><span><%- lang('settings.navAbout') %></span></button>
+                    <button class="settingsNavItem" rSc="settingsTabUpdate" id="settingsNavUpdate"><svg class="tabler-icon settingsNavIcon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg><span><%- lang('settings.navUpdates') %></span></button>
                 </div>
+            </div>
+            <div id="settingsNavContentBottom">
+                <div class="settingsNavDivider"></div>
+                <button id="settingsNavDone"><%- lang('settings.navDone') %></button>
             </div>
         </div>
     </div>
@@ -300,6 +301,18 @@
             </div>
             <div class="settingsFieldContainer">
                 <div class="settingsFieldLeft">
+                    <span class="settingsFieldTitle"><%- lang('settings.hideOnGameStartTitle') %></span>
+                    <span class="settingsFieldDesc"><%- lang('settings.hideOnGameStartDesc') %></span>
+                </div>
+                <div class="settingsFieldRight">
+                    <label class="toggleSwitch">
+                        <input type="checkbox" cValue="HideOnGameStart">
+                        <span class="toggleSwitchSlider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="settingsFieldContainer">
+                <div class="settingsFieldLeft">
                     <span class="settingsFieldTitle"><%- lang('settings.allowPrereleaseTitle') %></span>
                     <span class="settingsFieldDesc"><%- lang('settings.allowPrereleaseDesc') %></span>
                 </div>
@@ -344,11 +357,11 @@
             <div id="settingsAboutCurrentContainer">
                 <div id="settingsAboutCurrentContent">
                     <div id="settingsAboutCurrentHeadline">
-                        <img id="settingsAboutLogo" src="./assets/images/UTGC.svg">
+                        <img id="settingsAboutLogo" src="./assets/images/AppIcon.png" alt="" width="72" height="72">
                         <span id="settingsAboutTitle"><%- lang('settings.aboutTitle', { appName: lang('app.title') }) %></span>
                     </div>
                     <div id="settingsAboutCurrentVersion">
-                        <div id="settingsAboutCurrentVersionCheck">&#10003;</div>
+                        <div id="settingsAboutCurrentVersionCheck"><svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l5 5l10 -10" /></svg></div>
                         <div id="settingsAboutCurrentVersionDetails">
                             <span id="settingsAboutCurrentVersionTitle"><%- lang('settings.stableRelease') %></span>
                             <div id="settingsAboutCurrentVersionLine">
@@ -361,7 +374,6 @@
                 <div id="settingsAboutButtons">
                     <a href="<%- lang('settings.sourceGithubLink') %>" id="settingsAboutSourceButton" class="settingsAboutButton"><%- lang('settings.sourceGithub') %></a>
                     <!-- The following must be included in third-party usage. -->
-                    <!-- <a href="https://github.com/dscalzi/HeliosLauncher" id="settingsAboutSourceButton" class="settingsAboutButton">Original Source</a> -->
                     <a href="<%- lang('settings.supportLink') %>" id="settingsAboutSupportButton" class="settingsAboutButton"><%- lang('settings.support') %></a>
                     <a href="#" id="settingsAboutDevToolsButton" class="settingsAboutButton"><%- lang('settings.devToolsConsole') %></a>
                 </div>
@@ -392,7 +404,7 @@
                         <span id="settingsUpdateTitle"><!-- You Are Running the Latest Version --></span>
                     </div>
                     <div id="settingsUpdateVersion">
-                        <div id="settingsUpdateVersionCheck">&#10003;</div>
+                        <div id="settingsUpdateVersionCheck"><svg class="tabler-icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12l5 5l10 -10" /></svg></div>
                         <div id="settingsUpdateVersionDetails">
                             <span id="settingsUpdateVersionTitle"><%- lang('settings.stableRelease') %></span>
                             <div id="settingsUpdateVersionLine">

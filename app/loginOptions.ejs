@@ -1,11 +1,14 @@
 <div id="loginOptionsContainer" style="display: none;">
     <div id="loginOptionsContent">
         <div class="loginOptionsMainContent">
-            <h2><%- lang('loginOptions.loginOptionsTitle') %></h2>
+            <div class="loginOptionsHeader">
+                <h2><%- lang('loginOptions.loginOptionsTitle') %></h2>
+                <p class="loginOptionsSubtitle"><%- lang('loginOptions.loginOptionsSubtitle') %></p>
+            </div>
             <div class="loginOptionActions">
                 <div class="loginOptionButtonContainer">
-                    <button id="loginOptionMicrosoft" class="loginOptionButton">
-                        <svg class="tabler-icon" aria-hidden="true" focusable="false"
+                    <button id="loginOptionMicrosoft" class="loginOptionButton" aria-label="<%- lang('loginOptions.loginWithMicrosoft') %>">
+                        <svg class="tabler-icon loginOptionIcon" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
@@ -20,12 +23,25 @@
   <path d="M12 5l0 14" />
   <path d="M4 12l16 0" />
 </svg>
-                        <span><%- lang('loginOptions.loginWithMicrosoft') %></span>
+                        <span class="loginOptionLabel"><%- lang('loginOptions.providerMicrosoft') %></span>
+                        <svg class="tabler-icon loginOptionChevron" aria-hidden="true" focusable="false"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9 6l6 6l-6 6" />
+</svg>
                     </button>
                 </div>
                 <div class="loginOptionButtonContainer">
-                    <button id="loginOptionMojang" class="loginOptionButton">
-                        <svg class="tabler-icon" aria-hidden="true" focusable="false"
+                    <button id="loginOptionMojang" class="loginOptionButton" aria-label="<%- lang('loginOptions.loginWithMojang') %>">
+                        <svg class="tabler-icon loginOptionIcon" aria-hidden="true" focusable="false"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
@@ -43,7 +59,20 @@
   <path d="M12 17l3.003 -1.668m3 -1.667l2.997 -1.665m-9 5l-9 -5" />
   <path d="M15 17l3 -1.67v-3l-3 1.67l0 3" />
 </svg>
-                        <span><%- lang('loginOptions.loginWithMojang') %></span>
+                        <span class="loginOptionLabel"><%- lang('loginOptions.providerMojang') %></span>
+                        <svg class="tabler-icon loginOptionChevron" aria-hidden="true" focusable="false"
+  xmlns="http://www.w3.org/2000/svg"
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M9 6l6 6l-6 6" />
+</svg>
                     </button>
                 </div>
             </div>
