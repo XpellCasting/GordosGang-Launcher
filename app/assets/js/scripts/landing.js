@@ -4,9 +4,6 @@
 // Requirements
 const { URL }                 = require('url')
 const {
-    getServerStatus
-}                             = require('helios-core/mojang')
-const {
     isDisplayableError,
     validateLocalFile
 }                             = require('helios-core/common')
@@ -28,6 +25,7 @@ const {
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
 const ProcessBuilder          = require('./assets/js/processbuilder')
+const { getServerStatus }     = require('./assets/js/serverstatus')
 
 // Launch Elements
 const launch_content          = document.getElementById('launch_content')
@@ -266,41 +264,18 @@ const MOTD_NAMED_COLORS = [
     'dark_gray', 'blue', 'green', 'aqua', 'red', 'light_purple', 'yellow', 'white'
 ]
 
-/**
- * The status packet is read as Latin-1, so UTF-8 text such as `§` or `»`
- * arrives as `Â§` / `Â»`. Undo that when the telltale pattern is present.
- */
-function repairStatusText(text){
-    if(!/[ÂÃ][\u0080-\u00BF]/.test(text)){
-        return text
-    }
-    const repaired = Buffer.from(text, 'latin1').toString('utf8')
-    return repaired.includes('\uFFFD') ? text : repaired
+function motdColor(color){
+    if(typeof color !== 'string') return null
+    if(/^#[0-9a-f]{6}$/i.test(color)) return color
+    const index = MOTD_NAMED_COLORS.indexOf(color)
+    return index >= 0 ? MOTD_COLORS[index.toString(16)] : null
 }
 
 /**
- * Flatten a chat component into legacy `§` formatted text.
+ * Split legacy `§` formatted text into styled runs, starting from `style`.
  */
-function chatToLegacy(component){
-    if(component == null) return ''
-    if(typeof component === 'string') return component
-    if(Array.isArray(component)) return component.map(chatToLegacy).join('')
-    let out = ''
-    const colorIndex = MOTD_NAMED_COLORS.indexOf(component.color)
-    if(colorIndex >= 0) out += '§' + colorIndex.toString(16)
-    if(component.bold) out += '§l'
-    if(component.italic) out += '§o'
-    out += component.text ?? ''
-    if(component.extra) out += chatToLegacy(component.extra)
-    return out
-}
-
-/**
- * Render `§` formatted text into an element without ever parsing it as HTML.
- */
-function renderMotd(el, text){
-    el.replaceChildren()
-    let style = {}
+function legacyToRuns(text, style, runs){
+    style = { ...style }
     for(const part of text.split(/(§[0-9a-fk-or])/i)){
         const code = /^§([0-9a-fk-or])$/i.exec(part)?.[1].toLowerCase()
         if(code != null){
@@ -308,20 +283,51 @@ function renderMotd(el, text){
             else if(code === 'r') style = {}
             else if(code === 'l') style.bold = true
             else if(code === 'o') style.italic = true
-            else if(code === 'n') style.underline = true
-            else if(code === 'm') style.strike = true
+            else if(code === 'n') style.underlined = true
+            else if(code === 'm') style.strikethrough = true
             continue
         }
-        if(part === '') continue
+        if(part !== '') runs.push({ text: part, style })
+    }
+    return runs
+}
+
+/**
+ * Flatten a chat component into styled text runs. Children inherit their
+ * parent's style, and hex colors (`#RRGGBB`) are kept as is.
+ */
+function chatToRuns(component, inherited = {}, runs = []){
+    if(component == null) return runs
+    if(typeof component === 'string') return legacyToRuns(component, inherited, runs)
+    if(Array.isArray(component)){
+        component.forEach(child => chatToRuns(child, inherited, runs))
+        return runs
+    }
+    const style = { ...inherited }
+    const color = motdColor(component.color)
+    if(color) style.color = color
+    for(const key of ['bold', 'italic', 'underlined', 'strikethrough']){
+        if(component[key] != null) style[key] = component[key] === true
+    }
+    legacyToRuns(component.text ?? '', style, runs)
+    if(component.extra) chatToRuns(component.extra, style, runs)
+    return runs
+}
+
+/**
+ * Render a MOTD into an element without ever parsing it as HTML.
+ */
+function renderMotd(el, description){
+    el.replaceChildren(...chatToRuns(description).map(({ text, style }) => {
         const span = document.createElement('span')
-        span.textContent = part
+        span.textContent = text
         if(style.color) span.style.color = style.color
         if(style.bold) span.style.fontWeight = '700'
         if(style.italic) span.style.fontStyle = 'italic'
-        const decoration = [style.underline && 'underline', style.strike && 'line-through'].filter(Boolean).join(' ')
+        const decoration = [style.underlined && 'underline', style.strikethrough && 'line-through'].filter(Boolean).join(' ')
         if(decoration) span.style.textDecoration = decoration
-        el.appendChild(span)
-    }
+        return span
+    }))
 }
 
 function renderPlayerMeter(online, max){
@@ -377,7 +383,7 @@ function renderServerStatus(status, latency){
     serverCardLatency.textContent = online ? Lang.queryJS('landing.serverCard.latency', { ms: latency }) : ''
 
     if(online){
-        renderMotd(serverCardMotd, repairStatusText(chatToLegacy(status.description)))
+        renderMotd(serverCardMotd, status.description)
         const { online: count, max, sample } = status.players
         serverCardPlayerText.textContent = count > 0
             ? Lang.queryJS('landing.serverCard.players', { online: count, max })
