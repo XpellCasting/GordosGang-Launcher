@@ -9,6 +9,7 @@ const os                    = require('os')
 const path                  = require('path')
 
 const ConfigManager            = require('./configmanager')
+const { applyManagedArchives }  = require('./managedarchive')
 
 const logger = LoggerUtil.getLogger('ProcessBuilder')
 
@@ -73,6 +74,12 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        for(const result of applyManagedArchives(this.server, this.gameDir)){
+            logger.info(
+                `Managed archive ${result.id}: ${result.extracted} file(s) `
+                + (result.updated ? 'updated.' : 'restored.')
+            )
+        }
         this.applyPlatformConfigOverrides()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true

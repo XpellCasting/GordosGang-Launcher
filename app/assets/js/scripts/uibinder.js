@@ -167,7 +167,7 @@ async function showMainUI(data){
     setStartupStatus('stagePreparing')
     await prepareSettings(true)
     setStartupProgress(85)
-    updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
+    updateSelectedServer(resolveSelectedServer(data))
     refreshServerStatus()
 
     const isLoggedIn = Object.keys(ConfigManager.getAuthAccounts()).length > 0
@@ -216,6 +216,20 @@ async function showMainUI(data){
     })
 }
 
+/**
+ * Resolve the saved server, falling back to the distribution's main server.
+ *
+ * Pack migrations deliberately use a new server id so Forge/Fabric files from
+ * the old instance can never be mixed. Existing installations still have the
+ * previous id saved, so treating that as "no selection" would disable Play.
+ */
+function resolveSelectedServer(data){
+    return data.getServerById(ConfigManager.getSelectedServer())
+        ?? data.servers.find(server => server.rawServer.mainServer)
+        ?? data.servers[0]
+        ?? null
+}
+
 function showFatalStartupError(){
     dismissStartupLoading()
         .set('#loadingContainer', { display: 'none' })
@@ -240,7 +254,7 @@ function showFatalStartupError(){
  * @param {Object} data The distro index object.
  */
 function onDistroRefresh(data){
-    updateSelectedServer(data.getServerById(ConfigManager.getSelectedServer()))
+    updateSelectedServer(resolveSelectedServer(data))
     refreshServerStatus()
     initNews()
     syncModConfigurations(data)

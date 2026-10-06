@@ -240,8 +240,8 @@ copied = "Address copied!"
 
 [js.landing.discord]
 loading = "Loading game.."
-joining = "Sailing to Westeros!"
-joined = "Exploring the Realm!"
+joining = "Joining the server"
+joined = "Playing on GordosGang"
 
 [js.overlay]
 dismiss = "Dismiss"

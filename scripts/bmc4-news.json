@@ -1,0 +1,14 @@
+{
+  "title": "GordosGang Launcher",
+  "description": "Noticias del servidor de GordosGang",
+  "items": [
+    {
+      "id": "better-mc-v61",
+      "title": "Better MC v61 disponible",
+      "date": "2026-10-06T09:00:00-03:00",
+      "author": "GordosGang",
+      "summary": "El launcher ahora instala Better MC 4 v61 con los mods requeridos por el servidor Arclight.",
+      "html": "<p>El servidor cambió a <strong>Better MC 4 Forge 1.20.1 v61</strong> sobre Arclight.</p><p>Solo tienes que pulsar <strong>Jugar</strong>: el launcher crea una instancia nueva y descarga tanto el pack base como los mods requeridos por GordosGang, incluidos Create y Legends. La instalación anterior de Homestead queda separada.</p><p>La primera descarga es grande y puede tardar varios minutos. Las siguientes veces solo se validan y actualizan los archivos que hayan cambiado.</p>"
+    }
+  ]
+}

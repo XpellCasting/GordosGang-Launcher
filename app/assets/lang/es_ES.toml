@@ -239,8 +239,8 @@ copied = "¡Dirección copiada!"
 
 [js.landing.discord]
 loading = "Cargando el juego…"
-joining = "Entrando a Homestead"
-joined = "Explorando Homestead"
+joining = "Entrando al servidor"
+joined = "Jugando en GordosGang"
 
 [js.overlay]
 dismiss = "Cerrar"
